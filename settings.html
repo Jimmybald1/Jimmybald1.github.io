@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <title>IBB Stats Calculator</title>
         <meta name="description" content="Unofficial Calculator for IBB Ball Upgrades">
+        <meta name="viewport" content="width=device-width, initial-scale=2" />
 
         <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -119,203 +120,201 @@
             </li>
         </ul>
         <div class="text-center">
-            <div class="col-md-6">
-                <table class="table table-dark table-hover" style="width: 320px;">
-                    <thead>
-                        <th style="width: 120px;">Prestige</th>
-                        <th style="width: 40px">Value</th>
-                        <th style="width: 20px"></th>
-                    </thead>
-                    <tr>
-                        <td style="text-align: center;">Ball Speed</td>
-                        <td><input type="number" id="prestige_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Power</td>
-                        <td><input type="number" id="prestige_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>New Ball Cost</td>
-                        <td><input type="number" id="prestige_ballCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Speed Cost</td>
-                        <td><input type="number" id="prestige_speedCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Power Cost</td>
-                        <td><input type="number" id="prestige_powerCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <thead>
-                        <th>Cards</th>
-                        <th>Value</th>
-                        <th>Active?</th>
-                    </thead>
-                    <tr>
-                        <td>Ball Speed</td>
-                        <td><input type="number" id="cards_speed_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_speed_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Power</td>
-                        <td><input type="number" id="cards_power_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_power_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Quality Control</td>
-                        <td><input type="number" id="cards_qc_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_qc_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Spec.</td>
-                        <td><input type="number" id="cards_spec_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_spec_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Catalyst</td>
-                        <td><input type="number" id="cards_catalyst_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_catalyst_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Shield Pen.</td>
-                        <td><input type="number" id="cards_shieldpen_value" onchange="handleChange(event)" /></td>
-                        <td><input type="checkbox" id="cards_shieldpen_active" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <thead>
-                        <th>Perks</th>
-                        <th>Value</th>
-                        <th></th>
-                    </thead>
-                    <tr>
-                        <td>Ball Speed</td>
-                        <td><input type="number" id="perks_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Power</td>
-                        <td><input type="number" id="perks_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>New Ball Cost</td>
-                        <td><input type="number" id="perks_ballCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Speed Cost</td>
-                        <td><input type="number" id="perks_speedCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Ball Power Cost</td>
-                        <td><input type="number" id="perks_powerCost" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <thead>
-                        <th>Boosts</th>
-                        <th></th>
-                        <th>Active?</th>
-                    </thead>
-                    <tr>
-                        <td>Power Hungry</td>
-                        <td></td>
-                        <td><input type="checkbox" id="boosts_ph" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <thead>
-                        <th>Badges</th>
-                        <th>Value</th>
-                        <th></th>
-                    </thead>
-                    <tr>
-                        <td>Basic</td>
-                        <td><input type="number" id="badges_basic" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Sniper</td>
-                        <td><input type="number" id="badges_sniper" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Splash</td>
-                        <td><input type="number" id="badges_splash" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Poison</td>
-                        <td><input type="number" id="badges_poison" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Demo</td>
-                        <td><input type="number" id="badges_demo" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Scatter</td>
-                        <td><input type="number" id="badges_scatter" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Pierce</td>
-                        <td><input type="number" id="badges_pierce" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        <td><input type="number" id="badges_cash" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Sword</td>
-                        <td><input type="number" id="badges_sword" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Fire</td>
-                        <td><input type="number" id="badges_fire" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Lightning</td>
-                        <td><input type="number" id="badges_lightning" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <thead>
-                        <th>Skills Tree</th>
-                        <th>Value</th>
-                        <th></th>
-                    </thead>
-                    <tr>
-                        <td>Basic Speed</td>
-                        <td><input type="number" id="skillstree_basic_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Basic Power</td>
-                        <td><input type="number" id="skillstree_basic_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Poison Speed</td>
-                        <td><input type="number" id="skillstree_poison_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Poison Enrage</td>
-                        <td><input type="number" id="skillstree_poison_enrage" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Demo Enrage</td>
-                        <td><input type="number" id="skillstree_demo_enrage" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Pierce Power</td>
-                        <td><input type="number" id="skillstree_pierce_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Sword Power</td>
-                        <td><input type="number" id="skillstree_sword_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Sword Speed</td>
-                        <td><input type="number" id="skillstree_sword_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Fire Power</td>
-                        <td><input type="number" id="skillstree_fire_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Lightning Power</td>
-                        <td><input type="number" id="skillstree_lightning_power" onchange="handleChange(event)" /></td>
-                    </tr>
-                    <tr>
-                        <td>Lightning Speed</td>
-                        <td><input type="number" id="skillstree_lightning_speed" onchange="handleChange(event)" /></td>
-                    </tr>
-                </table>
-            </div>
+            <table class="table table-dark table-hover" style="width: 320px;">
+                <thead>
+                    <th style="width: 120px;">Prestige</th>
+                    <th style="width: 40px">Value</th>
+                    <th style="width: 20px"></th>
+                </thead>
+                <tr>
+                    <td style="text-align: center;">Ball Speed</td>
+                    <td><input type="number" id="prestige_speed" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power</td>
+                    <td><input type="number" id="prestige_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>New Ball Cost</td>
+                    <td><input type="number" id="prestige_ballCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Speed Cost</td>
+                    <td><input type="number" id="prestige_speedCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power Cost</td>
+                    <td><input type="number" id="prestige_powerCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Cards</th>
+                    <th>Value</th>
+                    <th>Active?</th>
+                </thead>
+                <tr>
+                    <td>Ball Speed</td>
+                    <td><input type="number" id="cards_speed_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_speed_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power</td>
+                    <td><input type="number" id="cards_power_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_power_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Quality Control</td>
+                    <td><input type="number" id="cards_qc_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_qc_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Spec.</td>
+                    <td><input type="number" id="cards_spec_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_spec_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Catalyst</td>
+                    <td><input type="number" id="cards_catalyst_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_catalyst_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Shield Pen.</td>
+                    <td><input type="number" id="cards_shieldpen_value" onchange="handleChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_shieldpen_active" onchange="handleChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Perks</th>
+                    <th>Value</th>
+                    <th></th>
+                </thead>
+                <tr>
+                    <td>Ball Speed</td>
+                    <td><input type="number" id="perks_speed" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power</td>
+                    <td><input type="number" id="perks_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>New Ball Cost</td>
+                    <td><input type="number" id="perks_ballCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Speed Cost</td>
+                    <td><input type="number" id="perks_speedCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power Cost</td>
+                    <td><input type="number" id="perks_powerCost" onchange="handleChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Boosts</th>
+                    <th></th>
+                    <th>Active?</th>
+                </thead>
+                <tr>
+                    <td>Power Hungry</td>
+                    <td></td>
+                    <td><input type="checkbox" id="boosts_ph" onchange="handleChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Badges</th>
+                    <th>Value</th>
+                    <th></th>
+                </thead>
+                <tr>
+                    <td>Basic</td>
+                    <td><input type="number" id="badges_basic" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Sniper</td>
+                    <td><input type="number" id="badges_sniper" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Splash</td>
+                    <td><input type="number" id="badges_splash" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Poison</td>
+                    <td><input type="number" id="badges_poison" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Demo</td>
+                    <td><input type="number" id="badges_demo" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Scatter</td>
+                    <td><input type="number" id="badges_scatter" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Pierce</td>
+                    <td><input type="number" id="badges_pierce" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td><input type="number" id="badges_cash" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Sword</td>
+                    <td><input type="number" id="badges_sword" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Fire</td>
+                    <td><input type="number" id="badges_fire" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Lightning</td>
+                    <td><input type="number" id="badges_lightning" onchange="handleChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Skills Tree</th>
+                    <th>Value</th>
+                    <th></th>
+                </thead>
+                <tr>
+                    <td>Basic Speed</td>
+                    <td><input type="number" id="skillstree_basic_speed" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Basic Power</td>
+                    <td><input type="number" id="skillstree_basic_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Poison Speed</td>
+                    <td><input type="number" id="skillstree_poison_speed" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Poison Enrage</td>
+                    <td><input type="number" id="skillstree_poison_enrage" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Demo Enrage</td>
+                    <td><input type="number" id="skillstree_demo_enrage" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Pierce Power</td>
+                    <td><input type="number" id="skillstree_pierce_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Sword Power</td>
+                    <td><input type="number" id="skillstree_sword_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Sword Speed</td>
+                    <td><input type="number" id="skillstree_sword_speed" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Fire Power</td>
+                    <td><input type="number" id="skillstree_fire_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Lightning Power</td>
+                    <td><input type="number" id="skillstree_lightning_power" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Lightning Speed</td>
+                    <td><input type="number" id="skillstree_lightning_speed" onchange="handleChange(event)" /></td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>
