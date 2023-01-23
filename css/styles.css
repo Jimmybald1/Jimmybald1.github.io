@@ -1,0 +1,48 @@
+html {
+    background-color: #555;
+    color: #fff;
+}
+
+body {
+    background-color: #555;
+    color: #fff;
+}
+
+select {
+    min-width: 90px;
+    max-width: 120px;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: #555;
+    border-color: #555;
+}
+
+select:hover {
+    background-color: #444;
+}
+
+label {
+    width: 100%;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: #555;
+    border-color: #555;
+}
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
