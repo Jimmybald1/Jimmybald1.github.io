@@ -858,7 +858,7 @@
             return item ? (num / item.value).toFixed(2) + item.symbol : "0";
         }
     
-        function handleChange(event) {
+        function handleCalculatorChange(event) {
             var element = event.target;
             var value = element.value;
             console.log(tabs[element.id], value);
@@ -871,9 +871,23 @@
             }
     
             StoreItem("statsCalculator", JSON.stringify(tabs));
+            BuildStatsCalculator();
+        }
     
-            //var array = element.id.split("_");
-            //CalculateRow(array[0]);
+        function handleSettingsChange(event) {
+            var element = event.target;
+            var value = element.value;
+    
+            if (element.id.includes("active") || element.id.includes("boosts")) {
+                console.log(settings[element.id], element.checked);
+                settings[element.id] = element.checked;
+            }
+            else {
+                console.log(settings[element.id], parseFloat(value));
+                settings[element.id] = parseFloat(value);
+            }
+    
+            StoreItem("settings", JSON.stringify(settings));
             BuildStatsCalculator();
         }
     
@@ -889,6 +903,7 @@
         //}
     
         function BuildStatsCalculator() {
+            // Calculator
             for (var key in tabs) {
                 $('#' + key).val(tabs[key]);
             }
@@ -899,6 +914,16 @@
             }
 
             $('#totalcost').html(FormatNumber(totalcost));
+            
+            // Mini-Settings
+            for (var key in settings) {
+                if (key.includes("active") || key.includes("boosts")) {
+                    $('#' + key).prop('checked', settings[key]);
+                }
+                else {
+                    $('#' + key).val(settings[key]);
+                }
+            }
         }
     
         function CalculateRow(slot) {
@@ -1132,14 +1157,14 @@
 				<tr>
 					<th>Base</th>
 					<td>
-						<select id="base_type" onchange="handleChange(event)">
+						<select id="base_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="basic">Basic</option>
 						</select>
 					</td>
-					<td><input type="number" id="base_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="base_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="base_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="base_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="base_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="base_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="base_speed"></td>
 					<td id="base_power"></td>
 					<td id="base_cost"></td>
@@ -1151,15 +1176,15 @@
 				<tr>
 					<th>175</th>
 					<td>
-						<select id="175_type" onchange="handleChange(event)">
+						<select id="175_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
 						</select>
 					</td>
-					<td><input type="number" id="175_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="175_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="175_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="175_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="175_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="175_speed"></td>
 					<td id="175_power"></td>
 					<td id="175_cost"></td>
@@ -1171,7 +1196,7 @@
 				<tr>
 					<th>7.5k</th>
 					<td>
-						<select id="7500_type" onchange="handleChange(event)">
+						<select id="7500_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1179,9 +1204,9 @@
 							<option value="demo">Demo</option>
 						</select>
 					</td>
-					<td><input type="number" id="7500_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="7500_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="7500_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="7500_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="7500_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="7500_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="7500_speed"></td>
 					<td id="7500_power"></td>
 					<td id="7500_cost"></td>
@@ -1193,7 +1218,7 @@
 				<tr>
 					<th>175K</th>
 					<td>
-						<select id="175k_type" onchange="handleChange(event)">
+						<select id="175k_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1202,9 +1227,9 @@
 							<option value="scatter">Scatter</option>
 						</select>
 					</td>
-					<td><input type="number" id="175k_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="175k_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="175k_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175k_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="175k_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="175k_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="175k_speed"></td>
 					<td id="175k_power"></td>
 					<td id="175k_cost"></td>
@@ -1216,7 +1241,7 @@
 				<tr>
 					<th>15M</th>
 					<td>
-						<select id="15m_type" onchange="handleChange(event)">
+						<select id="15m_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1227,9 +1252,9 @@
 							<option value="cash">Cash</option>
 						</select>
 					</td>
-					<td><input type="number" id="15m_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="15m_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="15m_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="15m_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="15m_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="15m_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="15m_speed"></td>
 					<td id="15m_power"></td>
 					<td id="15m_cost"></td>
@@ -1241,7 +1266,7 @@
 				<tr>
 					<th>400B</th>
 					<td>
-						<select id="400b_type" onchange="handleChange(event)">
+						<select id="400b_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1255,9 +1280,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="400b_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="400b_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="400b_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="400b_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="400b_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="400b_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="400b_speed"></td>
 					<td id="400b_power"></td>
 					<td id="400b_cost"></td>
@@ -1269,7 +1294,7 @@
 				<tr>
 					<th>10q</th>
 					<td>
-						<select id="10q_type" onchange="handleChange(event)">
+						<select id="10q_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1283,9 +1308,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="10q_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="10q_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="10q_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10q_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="10q_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="10q_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="10q_speed"></td>
 					<td id="10q_power"></td>
 					<td id="10q_cost"></td>
@@ -1297,7 +1322,7 @@
 				<tr>
 					<th>10s</th>
 					<td>
-						<select id="10s_type" onchange="handleChange(event)">
+						<select id="10s_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1311,9 +1336,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="10s_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="10s_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="10s_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10s_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="10s_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="10s_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="10s_speed"></td>
 					<td id="10s_power"></td>
 					<td id="10s_cost"></td>
@@ -1325,7 +1350,7 @@
 				<tr>
 					<th>100O</th>
 					<td>
-						<select id="100o_type" onchange="handleChange(event)">
+						<select id="100o_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1339,9 +1364,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="100o_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="100o_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="100o_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="100o_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="100o_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="100o_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="100o_speed"></td>
 					<td id="100o_power"></td>
 					<td id="100o_cost"></td>
@@ -1353,7 +1378,7 @@
 				<tr>
 					<th>5aa</th>
 					<td>
-						<select id="5aa_type" onchange="handleChange(event)">
+						<select id="5aa_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1367,9 +1392,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="5aa_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="5aa_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="5aa_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="5aa_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="5aa_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="5aa_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="5aa_speed"></td>
 					<td id="5aa_power"></td>
 					<td id="5aa_cost"></td>
@@ -1381,7 +1406,7 @@
 				<tr>
 					<th>80ac</th>
 					<td>
-						<select id="80ac_type" onchange="handleChange(event)">
+						<select id="80ac_type" onchange="handleCalculatorChange(event)">
 							<option value="null"></option>
 							<option value="sniper">Sniper</option>
 							<option value="splash">Splash</option>
@@ -1395,9 +1420,9 @@
 							<option value="lightning">Lightning</option>
 						</select>
 					</td>
-					<td><input type="number" id="80ac_amount" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="80ac_speedLevel" onchange="handleChange(event)" /></td>
-					<td><input type="number" id="80ac_powerLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="80ac_amount" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="80ac_speedLevel" onchange="handleCalculatorChange(event)" /></td>
+					<td><input type="number" id="80ac_powerLevel" onchange="handleCalculatorChange(event)" /></td>
 					<td id="80ac_speed"></td>
 					<td id="80ac_power"></td>
 					<td id="80ac_cost"></td>
@@ -1421,6 +1446,41 @@
 					<td></td>
 				</tr>
 			</table>
+            <table class="table table-dark table-hover" style="width: 320px;">
+                <thead>
+                    <th style="width: 120px;">Cards</th>
+                    <th style="width: 40px">Value</th>
+                    <th style="width: 20px">Active?</th>
+                </thead>
+                <tr>
+                    <td>Quality Control</td>
+                    <td><input type="number" id="cards_qc_value" onchange="handleSettingsChange(event)" /></td>
+                    <td><input type="checkbox" id="cards_qc_active" onchange="handleSettingsChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Perks</th>
+                    <th>Value</th>
+                    <th></th>
+                </thead>
+                <tr>
+                    <td>Ball Speed</td>
+                    <td><input type="number" id="perks_speed" onchange="handleSettingsChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Ball Power</td>
+                    <td><input type="number" id="perks_power" onchange="handleSettingsChange(event)" /></td>
+                </tr>
+                <thead>
+                    <th>Boosts</th>
+                    <th></th>
+                    <th>Active?</th>
+                </thead>
+                <tr>
+                    <td>Power Hungry</td>
+                    <td></td>
+                    <td><input type="checkbox" id="boosts_ph" onchange="handleSettingsChange(event)" /></td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>
