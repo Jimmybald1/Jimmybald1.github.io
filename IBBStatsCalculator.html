@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <title>IBB Stats Calculator</title>
         <meta name="description" content="Unofficial Calculator for IBB Ball Upgrades">
-        <meta name="viewport" content="width=device-width, initial-scale=0.5" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -636,6 +636,149 @@
                 "power": 80e42
             }
         }
+		
+		var brickmult = [
+			{
+				"level": 1,
+				"mult": 1,
+				"cumulative": 1,
+			},
+			{
+				"level": 75,
+				"mult": 1.2,
+				"cumulative": 1.2,
+			},
+			{
+				"level": 100,
+				"mult": 1.25,
+				"cumulative": 1.5,
+			},
+			{
+				"level": 150,
+				"mult": 1.4,
+				"cumulative": 2.1,
+			},
+			{
+				"level": 200,
+				"mult": 1.5,
+				"cumulative": 3.15,
+			},
+			{
+				"level": 250,
+				"mult": 1.6,
+				"cumulative": 5.04,
+			},
+			{
+				"level": 300,
+				"mult": 1.7,
+				"cumulative": 8.568,
+			},
+			{
+				"level": 400,
+				"mult": 1.8,
+				"cumulative": 15.4224,
+			},
+			{
+				"level": 500,
+				"mult": 2,
+				"cumulative": 30.8448,
+			},
+			{
+				"level": 750,
+				"mult": 2.5,
+				"cumulative": 77.112,
+			},
+			{
+				"level": 1000,
+				"mult": 2.5,
+				"cumulative": 192.78,
+			},
+			{
+				"level": 1500,
+				"mult": 2.5,
+				"cumulative": 481.95,
+			},
+			{
+				"level": 2500,
+				"mult": 3,
+				"cumulative": 1445.85,
+			},
+			{
+				"level": 5000,
+				"mult": 3,
+				"cumulative": 4337.55,
+			},
+			{
+				"level": 7500,
+				"mult": 3.5,
+				"cumulative": 15181.425,
+			},
+			{
+				"level": 10000,
+				"mult": 3.5,
+				"cumulative": 53134.9875,
+			},
+			{
+				"level": 15000,
+				"mult": 4,
+				"cumulative": 212539.95,
+			},
+			{
+				"level": 20000,
+				"mult": 4,
+				"cumulative": 850159.8,
+			},
+			{
+				"level": 25000,
+				"mult": 4,
+				"cumulative": 3400639.2,
+			},
+			{
+				"level": 30000,
+				"mult": 4,
+				"cumulative": 13602556.8,
+			},
+			{
+				"level": 40000,
+				"mult": 4,
+				"cumulative": 54410227.2,
+			},
+			{
+				"level": 50000,
+				"mult": 4,
+				"cumulative": 217640908.8,
+			},
+			{
+				"level": 75000,
+				"mult": 4,
+				"cumulative": 870563635.2,
+			},
+			{
+				"level": 100000,
+				"mult": 5,
+				"cumulative": 4352818176,
+			},
+			{
+				"level": 125000,
+				"mult": 6,
+				"cumulative": 26116909056,
+			},
+			{
+				"level": 150000,
+				"mult": 7,
+				"cumulative": 182818363392,
+			},
+			{
+				"level": 175000,
+				"mult": 8,
+				"cumulative": 1462546907136,
+			},
+			{
+				"level": 200000,
+				"mult": 9,
+				"cumulative": 13162922164224,
+			},
+		]
     
         //StoreItem("settings", JSON.stringify(settings));
         settings = GetItem("settings", settings);
@@ -764,17 +907,63 @@
                 $('#' + slot + '_speed').html("");
                 $('#' + slot + '_power').html("");
                 $('#' + slot + '_cost').html("");
+                $('#' + slot + '_dmg_poison').html("");
+                $('#' + slot + '_1shot_brick').html("");
+                $('#' + slot + '_1shot_hex').html("");
+                $('#' + slot + '_1shot_shield').html("");
                 return;
             }
     
-            var amountLevel = tabs[slot + '_amount'];
-            var speedLevel = tabs[slot + '_speedLevel'];
-            var powerLevel = tabs[slot + '_powerLevel'];
-    
             // Speed
+			var speed = CalculateSpeed(balltype, slot);
+            $('#' + slot + '_speed').html(speed.toFixed(2));
+    
+            // Power
+			var power = CalculatePower(balltype, slot);
+            $('#' + slot + '_power').html(FormatNumber(power));
+    
+            // Cost
+			var cost = CalculateCost(slot);
+			$('#' + slot + '_cost').html(FormatNumber(cost));
+            totalcost += cost;
+			
+			// Damage with x Poison
+			var damage = null;
+			if (balltype !== "poison" && balltype !== "cash") {
+				damage = CalculateDamageWithPoison(power);
+				if (damage !== null) {
+					$('#' + slot + '_dmg_poison').html(FormatNumber(damage));
+				}
+				else {
+					damage = power;
+				}
+			}
+			
+			// Last 1 shots.			
+			if (balltype !== "poison" && balltype !== "cash") {
+				// Green bricks
+				var bricklevel = CalculateLastBrickLevel(damage);
+				$('#' + slot + '_1shot_brick').html(bricklevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+				
+				// Hex bricks
+				var hexlevel = CalculateLastBrickLevel(damage / 25);
+				$('#' + slot + '_1shot_hex').html(hexlevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+				
+				// Shield Hex bricks
+				var shielddamage = damage / 25 / (500 / ((settings["cards_shieldpen_active"]) ? settings["cards_shieldpen_value"] : 1));
+				if (balltype === "sword") {
+					shielddamage = damage / 25;
+				}				
+				var shieldlevel = CalculateLastBrickLevel(shielddamage);
+				$('#' + slot + '_1shot_shield').html(shieldlevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+			}
+        }
+		
+		function CalculateSpeed(balltype, slot) {		
             var increment = speedbasestats[balltype]["increment"];
             var modifier = speedbasestats[balltype]["modifier"];
             var basestat = basestats[slot][balltype]["speed"];
+            var speedLevel = tabs[slot + '_speedLevel'];
     
             var speedBase = (increment * speedLevel * (Math.pow(modifier, speedLevel))) + basestat;
             var speed = (speedBase * settings["prestige_speed"]
@@ -785,12 +974,15 @@
                 * ((speedLevel > 80) ? 0.4 : 1)
                 * SkillsTreeModifier(balltype, "speed")
                 * SkillsTreeModifier(balltype, "enrage"));
-            $('#' + slot + '_speed').html(speed.toFixed(2));
-    
-            // Power
+			return speed;
+		}
+		
+		function CalculatePower(balltype, slot) {			
             var increment = powerbasestats[balltype]["increment"];
             var modifier = powerbasestats[balltype]["modifier"];
             var basestat = basestats[slot][balltype]["power"];
+            var speedLevel = tabs[slot + '_speedLevel'];
+            var powerLevel = tabs[slot + '_powerLevel'];
     
             var powerBase = (1
                 + (increment * powerLevel * (Math.pow(modifier, powerLevel)))
@@ -807,9 +999,14 @@
                 * ((speedLevel > 80) ? 5 : 1)
                 * (1 + (settings["badges_" + tabs[slot + '_type']] * 0.2))
                 * SkillsTreeModifier(balltype, "power"));
-            $('#' + slot + '_power').html(FormatNumber(power));
-    
-            // Cost
+			return power;
+		}
+		
+		function CalculateCost(slot) {
+            var amountLevel = tabs[slot + '_amount'];
+            var speedLevel = tabs[slot + '_speedLevel'];
+            var powerLevel = tabs[slot + '_powerLevel'];
+		
             var ballcostmod = (1 + (settings["prestige_ballCost"] / 100)) * (1 + (settings["perks_ballCost"] / 100));
             var speedcostmod = (1 + (settings["prestige_speedCost"] / 100)) * (1 + (settings["perks_speedCost"] / 100));
             var powercostmod = (1 + (settings["prestige_powerCost"] / 100)) * (1 + (settings["perks_powerCost"] / 100));
@@ -836,9 +1033,8 @@
             var prestige1cost = ((speedLevel > 40) ? basecosts[slot]["speed"] * Math.pow(1.9, 38) * 9.49 : 0) * speedcostmod;
             var prestige2cost = ((speedLevel > 80) ? basecosts[slot]["speed"] * Math.pow(1.9, 78) * 9.49 : 0) * speedcostmod;
             var cost = buycost + ballcost + speedcost + powercost + prestige1cost + prestige2cost;
-            $('#' + slot + '_cost').html(FormatNumber(cost));
-            totalcost += cost;
-        }
+            return cost;
+		}
 
         function SkillsTreeModifier(balltype, stat) {
             var key = 'skillstree_' + balltype + '_' + stat;
@@ -848,6 +1044,61 @@
 
             return 1;
         }
+		
+		function CalculateDamageWithPoison(otherpower) {		
+			var poisonSlot = null;
+			for (var i in slots) {
+				if (tabs[slots[i] + "_type"] === "poison") {
+					poisonSlot = slots[i];
+					$('#header_dmg_poison').html("Damage w/<br>" + poisonSlot + " Poison");
+					if (poisonSlot === "7500") {
+						$('#header_dmg_poison').html("Damage w/<br>7.5k Poison");
+					}
+					
+					break;
+				}
+            }
+			
+			if (poisonSlot === null) {
+				$('#header_dmg_poison').html("Damage w/<br>?? Poison");
+				return null;
+			}
+			
+			var poisonDamage = CalculatePower("poison", poisonSlot);
+			var damage = otherpower * poisonDamage * ((settings["cards_catalyst_active"]) ? settings["cards_catalyst_value"] : 1);
+			return damage;
+		}
+		
+		function CalculateLastBrickLevel(balldamage) {
+			// Find first brick level where balldamage < brick health
+			var nexthealthjump = null;
+			for (var i in brickmult) {
+				var health = Math.pow(brickmult[i]["level"], 1.32) * brickmult[i]["cumulative"];
+				if (balldamage < health) {
+					nexthealthjump = i;
+					break;
+				}
+			}
+			
+			// If none found -> over 200k
+			if (nexthealthjump === null) {
+				var level = Math.pow(balldamage / brickmult[brickmult.length - 1]["cumulative"], 1/1.32);
+				return level;
+			}
+			
+			// Check if balldamage > previous brick health
+			var previoushealth = Math.pow(brickmult[nexthealthjump]["level"] - 1, 1.32) * brickmult[nexthealthjump - 1]["cumulative"];
+			if (balldamage > previoushealth) {
+				// If greater -> next level - 1 (balldamage between first and previous health)
+				var level = brickmult[nexthealthjump]["level"] - 1;
+				return level;
+			}
+			else {
+				// If smaller -> use cumulative of previous level
+				var level = Math.pow(balldamage / brickmult[nexthealthjump - 1]["cumulative"], 1/1.32);
+				return level;				
+			}
+		}
     </script>
     
     <body onload="BuildStatsCalculator()">
@@ -863,263 +1114,313 @@
             </li>
         </ul>
         <div class="text-center">
-            <div class="col-md-6">
-                <table class="table table-dark table-hover table-right" style="width: 650px;">
-                    <thead>
-                        <th style="width: 40px">Slot</th>
-                        <th style="width: 90px">Ball Type</th>
-                        <th style="width: 40px">Nr. Balls</th>
-                        <th style="width: 40px">Ball Speed</th>
-                        <th style="width: 40px">Ball Power</th>
-                        <th style="width: 50px">Speed</th>
-                        <th style="width: 50px">Power</th>
-                        <th style="width: 50px">Cost</th>
-                    </thead>
-                    <tr>
-                        <th>Base</th>
-                        <td>
-                            <select id="base_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="basic">Basic</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="base_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="base_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="base_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="base_speed"></td>
-                        <td id="base_power"></td>
-                        <td id="base_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>175</th>
-                        <td>
-                            <select id="175_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="175_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="175_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="175_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="175_speed"></td>
-                        <td id="175_power"></td>
-                        <td id="175_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>7.5k</th>
-                        <td>
-                            <select id="7500_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="7500_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="7500_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="7500_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="7500_speed"></td>
-                        <td id="7500_power"></td>
-                        <td id="7500_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>175K</th>
-                        <td>
-                            <select id="175k_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="175k_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="175k_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="175k_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="175k_speed"></td>
-                        <td id="175k_power"></td>
-                        <td id="175k_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>15M</th>
-                        <td>
-                            <select id="15m_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="15m_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="15m_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="15m_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="15m_speed"></td>
-                        <td id="15m_power"></td>
-                        <td id="15m_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>400B</th>
-                        <td>
-                            <select id="400b_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="400b_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="400b_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="400b_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="400b_speed"></td>
-                        <td id="400b_power"></td>
-                        <td id="400b_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>10q</th>
-                        <td>
-                            <select id="10q_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="10q_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="10q_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="10q_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="10q_speed"></td>
-                        <td id="10q_power"></td>
-                        <td id="10q_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>10s</th>
-                        <td>
-                            <select id="10s_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="10s_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="10s_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="10s_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="10s_speed"></td>
-                        <td id="10s_power"></td>
-                        <td id="10s_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>100O</th>
-                        <td>
-                            <select id="100o_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="100o_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="100o_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="100o_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="100o_speed"></td>
-                        <td id="100o_power"></td>
-                        <td id="100o_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>5aa</th>
-                        <td>
-                            <select id="5aa_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="5aa_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="5aa_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="5aa_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="5aa_speed"></td>
-                        <td id="5aa_power"></td>
-                        <td id="5aa_cost"></td>
-                    </tr>
-                    <tr>
-                        <th>80ac</th>
-                        <td>
-                            <select id="80ac_type" onchange="handleChange(event)">
-                                <option value="null"></option>
-                                <option value="sniper">Sniper</option>
-                                <option value="splash">Splash</option>
-                                <option value="poison">Poison</option>
-                                <option value="demo">Demo</option>
-                                <option value="scatter">Scatter</option>
-                                <option value="pierce">Pierce</option>
-                                <option value="cash">Cash</option>
-                                <option value="sword">Sword</option>
-                                <option value="fire">Fire</option>
-                                <option value="lightning">Lightning</option>
-                            </select>
-                        </td>
-                        <td><input type="number" id="80ac_amount" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="80ac_speedLevel" onchange="handleChange(event)" /></td>
-                        <td><input type="number" id="80ac_powerLevel" onchange="handleChange(event)" /></td>
-                        <td id="80ac_speed"></td>
-                        <td id="80ac_power"></td>
-                        <td id="80ac_cost"></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td id="totalcost"></td>
-                    </tr>
-                </table>
-            </div>
+			<table class="table table-dark table-hover table-right" style="width: 950px;">
+				<thead>
+					<th style="width: 50px">Slot</th>
+					<th style="width: 110px">Ball Type</th>
+					<th style="width: 55px">Nr. Balls</th>
+					<th style="width: 55px">Ball Speed</th>
+					<th style="width: 55px">Ball Power</th>
+					<th style="width: 75px">Speed</th>
+					<th style="width: 75px">Power</th>
+					<th style="width: 75px">Cost</th>
+					<th style="width: 100px" id="header_dmg_poison">Damage w/<br>?? Poison</th>
+					<th style="width: 100px">Last 1shot<br>Brick Level</th>
+					<th style="width: 100px">Last 1shot<br>Hex Level</th>
+					<th style="width: 100px">Last 1shot<br>Shield Hex</th>
+				</thead>
+				<tr>
+					<th>Base</th>
+					<td>
+						<select id="base_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="basic">Basic</option>
+						</select>
+					</td>
+					<td><input type="number" id="base_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="base_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="base_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="base_speed"></td>
+					<td id="base_power"></td>
+					<td id="base_cost"></td>
+					<td id="base_dmg_poison"></td>
+					<td id="base_1shot_brick"></td>
+					<td id="base_1shot_hex"></td>
+					<td id="base_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>175</th>
+					<td>
+						<select id="175_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+						</select>
+					</td>
+					<td><input type="number" id="175_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="175_speed"></td>
+					<td id="175_power"></td>
+					<td id="175_cost"></td>
+					<td id="175_dmg_poison"></td>
+					<td id="175_1shot_brick"></td>
+					<td id="175_1shot_hex"></td>
+					<td id="175_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>7.5k</th>
+					<td>
+						<select id="7500_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+						</select>
+					</td>
+					<td><input type="number" id="7500_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="7500_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="7500_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="7500_speed"></td>
+					<td id="7500_power"></td>
+					<td id="7500_cost"></td>
+					<td id="7500_dmg_poison"></td>
+					<td id="7500_1shot_brick"></td>
+					<td id="7500_1shot_hex"></td>
+					<td id="7500_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>175K</th>
+					<td>
+						<select id="175k_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+						</select>
+					</td>
+					<td><input type="number" id="175k_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175k_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="175k_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="175k_speed"></td>
+					<td id="175k_power"></td>
+					<td id="175k_cost"></td>
+					<td id="175k_dmg_poison"></td>
+					<td id="175k_1shot_brick"></td>
+					<td id="175k_1shot_hex"></td>
+					<td id="175k_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>15M</th>
+					<td>
+						<select id="15m_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+						</select>
+					</td>
+					<td><input type="number" id="15m_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="15m_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="15m_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="15m_speed"></td>
+					<td id="15m_power"></td>
+					<td id="15m_cost"></td>
+					<td id="15m_dmg_poison"></td>
+					<td id="15m_1shot_brick"></td>
+					<td id="15m_1shot_hex"></td>
+					<td id="15m_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>400B</th>
+					<td>
+						<select id="400b_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="400b_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="400b_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="400b_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="400b_speed"></td>
+					<td id="400b_power"></td>
+					<td id="400b_cost"></td>
+					<td id="400b_dmg_poison"></td>
+					<td id="400b_1shot_brick"></td>
+					<td id="400b_1shot_hex"></td>
+					<td id="400b_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>10q</th>
+					<td>
+						<select id="10q_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="10q_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10q_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10q_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="10q_speed"></td>
+					<td id="10q_power"></td>
+					<td id="10q_cost"></td>
+					<td id="10q_dmg_poison"></td>
+					<td id="10q_1shot_brick"></td>
+					<td id="10q_1shot_hex"></td>
+					<td id="10q_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>10s</th>
+					<td>
+						<select id="10s_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="10s_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10s_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="10s_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="10s_speed"></td>
+					<td id="10s_power"></td>
+					<td id="10s_cost"></td>
+					<td id="10s_dmg_poison"></td>
+					<td id="10s_1shot_brick"></td>
+					<td id="10s_1shot_hex"></td>
+					<td id="10s_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>100O</th>
+					<td>
+						<select id="100o_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="100o_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="100o_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="100o_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="100o_speed"></td>
+					<td id="100o_power"></td>
+					<td id="100o_cost"></td>
+					<td id="100o_dmg_poison"></td>
+					<td id="100o_1shot_brick"></td>
+					<td id="100o_1shot_hex"></td>
+					<td id="100o_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>5aa</th>
+					<td>
+						<select id="5aa_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="5aa_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="5aa_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="5aa_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="5aa_speed"></td>
+					<td id="5aa_power"></td>
+					<td id="5aa_cost"></td>
+					<td id="5aa_dmg_poison"></td>
+					<td id="5aa_1shot_brick"></td>
+					<td id="5aa_1shot_hex"></td>
+					<td id="5aa_1shot_shield"></td>
+				</tr>
+				<tr>
+					<th>80ac</th>
+					<td>
+						<select id="80ac_type" onchange="handleChange(event)">
+							<option value="null"></option>
+							<option value="sniper">Sniper</option>
+							<option value="splash">Splash</option>
+							<option value="poison">Poison</option>
+							<option value="demo">Demo</option>
+							<option value="scatter">Scatter</option>
+							<option value="pierce">Pierce</option>
+							<option value="cash">Cash</option>
+							<option value="sword">Sword</option>
+							<option value="fire">Fire</option>
+							<option value="lightning">Lightning</option>
+						</select>
+					</td>
+					<td><input type="number" id="80ac_amount" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="80ac_speedLevel" onchange="handleChange(event)" /></td>
+					<td><input type="number" id="80ac_powerLevel" onchange="handleChange(event)" /></td>
+					<td id="80ac_speed"></td>
+					<td id="80ac_power"></td>
+					<td id="80ac_cost"></td>
+					<td id="80ac_dmg_poison"></td>
+					<td id="80ac_1shot_brick"></td>
+					<td id="80ac_1shot_hex"></td>
+					<td id="80ac_1shot_shield"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td id="totalcost"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
         </div>
     </body>
 </html>
