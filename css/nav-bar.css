@@ -19,9 +19,29 @@ ul.horizontal li a {
 }
 
 ul.horizontal li a:hover:not(.active) {
-    background-color: #000;
+    background-color: #444;
 }
 
 ul.horizontal li a.active {
     background-color:#04AA6D;
+}
+
+
+
+
+
+.nav-tabs {
+	background-color: #333;
+	margin-top: 1px;
+	border: none;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+	color: #fff;
+	background-color: #555;
+	border-bottom: 0px;
+}
+
+.nav-tabs>li>a {
+	color: #999;
 }

@@ -24,11 +24,23 @@ select:hover {
 }
 
 label {
-    width: 100%;
-    text-align: center;
+    text-align: left;
 }
 
-input {
+/* Remove numeric up/down arrows. Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Remove numeric up/down arrows. Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+/* Inputs */
+input[type=number] {
     width: 100%;
     text-align: center;
     color: #fff;
@@ -37,18 +49,19 @@ input {
     vertical-align: middle;
 }
 
-    input[type='checkbox'] {
-        height: 20px;
-    }
+input[type=checkbox] {
+	width: 20px;
+	height: 20px;
+	margin: 2px;
+    vertical-align: sub;
+}
 
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+label > input[type=checkbox] {
+	margin-right: 5px;
+}
 
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
+a > input[type=button] {
+	background-color: transparent;
+    border: none;
+    margin-left: 5px;
+}

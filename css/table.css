@@ -1,9 +1,11 @@
 .table {
-    margin-top: 10px;
+    margin-top: 1px;
+	margin-left: 1px;
 }
 
     .table th, .table td {
         padding: 5px;
+		text-align: center;
     }
 
 .table-dark {
@@ -14,3 +16,11 @@
     .table-dark thead {
         background-color: #222;
     }
+
+.table-dark>tbody>tr>td, .table-dark>tbody>tr>th, .table-dark>tfoot>tr>td, .table-dark>tfoot>tr>th, .table-dark>thead>tr>td, .table-dark>thead>tr>th {
+	border-color: #444;
+}
+
+.hiderow {
+	display: none;
+}
