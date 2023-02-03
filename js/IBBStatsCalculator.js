@@ -1,3 +1,113 @@
+var defaultsettings = {
+	"prestige_speed": 3.3,
+	"prestige_power": 11.3,
+	"prestige_ballCost": -66,
+	"prestige_speedCost": -66,
+	"prestige_powerCost": -66,
+
+	"cards_speed_value": 2,
+	"cards_speed_active": true,
+	"cards_power_value": 4,
+	"cards_power_active": true,
+	"cards_qc_value": 5,
+	"cards_qc_active": true,
+	"cards_spec_value": 4,
+	"cards_spec_active": true,
+	"cards_catalyst_value": 5.5,
+	"cards_catalyst_active": true,
+	"cards_shieldpen_value": 20,
+	"cards_shieldpen_active": true,
+
+	"perks_speed": 4,
+	"perks_power": 4,
+	"perks_ballCost": -60,
+	"perks_speedCost": -60,
+	"perks_powerCost": -60,
+
+	"boosts_ph_active": true,
+
+	"badges_basic": 400,
+	"badges_sniper": 400,
+	"badges_splash": 400,
+	"badges_poison": 400,
+	"badges_demo": 400,
+	"badges_scatter": 400,
+	"badges_pierce": 400,
+	"badges_cash": 400,
+	"badges_sword": 400,
+	"badges_fire": 400,
+	"badges_lightning": 400,
+
+	"skillstree_poison_speed": 1.15,
+	"skillstree_poison_enrage": 2,
+	"skillstree_demo_enrage": 3,
+	"skillstree_lightning_power": 1.4,
+	"skillstree_lightning_speed": 1.1,
+};
+
+var defaulttabs = [{
+	"id": "tab0",
+	"name": "Tab0",
+	"settings": structuredClone(defaultsettings),
+	"global_settings_active": true,
+	"all_settings_active": false,
+	
+	"base_type": null,
+	"base_amount": null,
+	"base_speedLevel": null,
+	"base_powerLevel": null,
+
+	"175_type": null,
+	"175_amount": null,
+	"175_speedLevel": null,
+	"175_powerLevel": null,
+
+	"7500_type": "poison",
+	"7500_amount": 50,
+	"7500_speedLevel": 99,
+	"7500_powerLevel": 115,
+
+	"175k_type": null,
+	"175k_amount": null,
+	"175k_speedLevel": null,
+	"175k_powerLevel": null,
+
+	"15m_type": "cash",
+	"15m_amount": 50,
+	"15m_speedLevel": 99,
+	"15m_powerLevel": 103,
+
+	"400b_type": null,
+	"400b_amount": null,
+	"400b_speedLevel": null,
+	"400b_powerLevel": null,
+
+	"10q_type": "sword",
+	"10q_amount": 5,
+	"10q_speedLevel": 71,
+	"10q_powerLevel": 71,
+
+	"10s_type": "lightning",
+	"10s_amount": 50,
+	"10s_speedLevel": 40,
+	"10s_powerLevel": 51,
+
+	"100o_type": "demo",
+	"100o_amount": 25,
+	"100o_speedLevel": 25,
+	"100o_powerLevel": 25,
+
+	"5aa_type": null,
+	"5aa_amount": null,
+	"5aa_speedLevel": null,
+	"5aa_powerLevel": null,
+
+	"80ac_type": null,
+	"80ac_amount": null,
+	"80ac_speedLevel": null,
+	"80ac_powerLevel": null,
+}];
+
 //StoreItem("settings", JSON.stringify(defaultsettings));
 var settings = GetItem("settings", defaultsettings);
 //StoreItem("statsCalculator", JSON.stringify(defaulttabs));
@@ -54,10 +164,12 @@ function StoreItem(key, text) {
 
 function GetSettings(tab, key, def) {
 	if (tab.global_settings_active
-		&& Object.keys(settings).includes(key)) {
+		&& Object.keys(settings).includes(key)
+		&& settings[key] !== null) {
 		return settings[key];
 	}
-	else if (Object.keys(tab.settings).includes(key)){
+	else if (Object.keys(tab.settings).includes(key)
+		&& tab.settings[key] !== null){
 		return tab.settings[key];
 	}
 		
@@ -78,14 +190,12 @@ function SetSettings(tab, key, value) {
 function GetSettingsIfTrue(tab, ifkey, key, def) {
 	if (tab.global_settings_active
 		&& Object.keys(settings).includes(ifkey)
-		&& settings[ifkey]
-		&& Object.keys(settings).includes(key)) {
-		return settings[key];
+		&& settings[ifkey]) {
+		return GetSettings(tab, key, def);
 	}
 	else if (Object.keys(tab.settings).includes(ifkey)
-		&& tab.settings[ifkey]
-		&& Object.keys(tab.settings).includes(key)){
-		return tab.settings[key];
+		&& tab.settings[ifkey]){
+		return GetSettings(tab, key, def);
 	}
 		
 	return def;
@@ -196,8 +306,14 @@ function handleSettingsChange(event) {
 		SetSettings(tab, elementid, element.checked);
 	}
 	else {
-		console.log(GetSettings(tab, elementid), parseFloat(value));
-		SetSettings(tab, elementid, parseFloat(value));
+		if (value === '') {
+			console.log(GetSettings(tab, elementid), null);
+			SetSettings(tab, elementid, null);
+		}
+		else {
+			console.log(GetSettings(tab, elementid), parseFloat(value));
+			SetSettings(tab, elementid, parseFloat(value));
+		}
 	}
 	
 	BuildStatsCalculator(tab);
@@ -335,6 +451,21 @@ function BuildStatsCalculator(tab) {
 	if (!tab.all_settings_active) {
 		$('.' + tab.id + '_togglerow').addClass('hiderow');
 	}
+	
+	var powerCard = GetSettings(tab, 'cards_power_value', null);
+	if (powerCard === 2.4
+		|| powerCard === 2.8
+		|| powerCard === 3.2
+		|| powerCard === 3.6) {
+		alert('Your power card value is wrong, the card in game has a bug.\n\
+These are the possible values:\n\
+Level 1: 1.5\n\
+Level 2: 2.0\n\
+Level 3: 2.5\n\
+Level 4: 3.0\n\
+Level 5: 3.5\n\
+Level 6: 4.0')
+	}
 }
 
 function CalculateRow(tab, slot) {
@@ -374,6 +505,7 @@ function CalculateRow(tab, slot) {
 		}
 		else {
 			damage = power;
+			$(tagid + slot + '_dmg_poison').html("");
 		}
 	}
 	
@@ -408,7 +540,7 @@ function CalculateSpeed(tab, balltype, slot) {
 		* GetSettings(tab, "prestige_speed", 1)
 		* GetSettingsIfTrue(tab, "cards_speed_active", "cards_speed_value", 1)
 		* ((GetSettings(tab, "cards_qc_active", false)) ? 0.5 : 1)
-		* ((GetSettings(tab, "perks_speed", 1) > 1) ? GetSettings(tab, "perks_speed") : 1)
+		* ((GetSettings(tab, "perks_speed", 1) > 1) ? GetSettings(tab, "perks_speed", 1) : 1)
 		* ((speedLevel > 40) ? 0.4 : 1)
 		* ((speedLevel > 80) ? 0.4 : 1)
 		* SkillsTreeModifier(tab, balltype, "speed", 1)
@@ -432,11 +564,11 @@ function CalculatePower(tab, balltype, slot) {
 		* GetSettingsIfTrue(tab, "cards_power_active", "cards_power_value", 1)
 		* GetSettingsIfTrue(tab, "cards_qc_active", "cards_qc_value", 1)
 		* ((balltype === "poison" || balltype === "cash") ? GetSettingsIfTrue(tab, "cards_spec_active", "cards_spec_value", 1) : 1)
-		* ((GetSettings(tab, "perks_power", 1) > 1) ? GetSettings(tab, "perks_power") : 1)
+		* ((GetSettings(tab, "perks_power", 1) > 1) ? GetSettings(tab, "perks_power", 1) : 1)
 		* ((GetSettings(tab, "boosts_ph_active", false)) ? 3 : 1)
 		* ((speedLevel > 40) ? 5 : 1)
 		* ((speedLevel > 80) ? 5 : 1)
-		* (1 + (GetSettings(tab, "badges_" + tab[slot + '_type']) * 0.2))
+		* (1 + (GetSettings(tab, "badges_" + tab[slot + '_type'], 0) * 0.2))
 		* SkillsTreeModifier(tab, balltype, "power", 1));
 	return power;
 }
@@ -520,6 +652,11 @@ function CalculateLastBrickLevel(balldamage) {
 	if (nexthealthjump === null) {
 		var level = Math.pow(balldamage / brickmult[brickmult.length - 1].cumulative, 1/1.32);
 		return level;
+	}
+	
+	// If 0, damage is 0
+	if (nexthealthjump === "0") {
+		return 0;
 	}
 	
 	// Check if balldamage > previous brick health

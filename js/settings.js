@@ -1,3 +1,50 @@
+var defaultsettings = {
+	"prestige_speed": 3.3,
+	"prestige_power": 11.3,
+	"prestige_ballCost": -66,
+	"prestige_speedCost": -66,
+	"prestige_powerCost": -66,
+
+	"cards_speed_value": 2,
+	"cards_speed_active": true,
+	"cards_power_value": 4,
+	"cards_power_active": true,
+	"cards_qc_value": 5,
+	"cards_qc_active": true,
+	"cards_spec_value": 4,
+	"cards_spec_active": true,
+	"cards_catalyst_value": 5.5,
+	"cards_catalyst_active": true,
+	"cards_shieldpen_value": 20,
+	"cards_shieldpen_active": true,
+
+	"perks_speed": 4,
+	"perks_power": 4,
+	"perks_ballCost": -60,
+	"perks_speedCost": -60,
+	"perks_powerCost": -60,
+
+	"boosts_ph_active": true,
+
+	"badges_basic": 400,
+	"badges_sniper": 400,
+	"badges_splash": 400,
+	"badges_poison": 400,
+	"badges_demo": 400,
+	"badges_scatter": 400,
+	"badges_pierce": 400,
+	"badges_cash": 400,
+	"badges_sword": 400,
+	"badges_fire": 400,
+	"badges_lightning": 400,
+
+	"skillstree_poison_speed": 1.15,
+	"skillstree_poison_enrage": 2,
+	"skillstree_demo_enrage": 3,
+	"skillstree_lightning_power": 1.4,
+	"skillstree_lightning_speed": 1.1,
+};
+
 //StoreItem("settings", JSON.stringify(defaultsettings));
 var settings = GetItem("settings", defaultsettings);
 
@@ -39,8 +86,14 @@ function handleChange(event) {
 		settings[element.id] = element.checked;
 	}
 	else {
-		console.log(settings[element.id], parseFloat(value));
-		settings[element.id] = parseFloat(value);
+		if (value === '') {
+			console.log(settings[element.id], null);
+			settings[element.id] = null;
+		}
+		else {
+			console.log(settings[element.id], parseFloat(value));
+			settings[element.id] = parseFloat(value);
+		}
 	}
 
 	StoreItem("settings", JSON.stringify(settings));
