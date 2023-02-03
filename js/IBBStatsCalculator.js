@@ -118,7 +118,7 @@ if (!Array.isArray(tabs)) {
 	tabs = [tabs];
 	tabs[0].id = "tab0";
 	tabs[0].name = "Tab0";
-	StoreItem("statsCalculator", tabs);
+	StoreItem("statsCalculator", JSON.stringify(tabs));
 }
 
 if (!Object.keys(settings).includes("boosts_ph_active") && Object.keys(settings).includes("boosts_ph")){
@@ -163,10 +163,11 @@ function StoreItem(key, text) {
 }
 
 function GetSettings(tab, key, def) {
-	if (tab.global_settings_active
-		&& Object.keys(settings).includes(key)
+	if (tab.global_settings_active) {
+		if (Object.keys(settings).includes(key)
 		&& settings[key] !== null) {
 		return settings[key];
+		}
 	}
 	else if (Object.keys(tab.settings).includes(key)
 		&& tab.settings[key] !== null){
@@ -188,10 +189,11 @@ function SetSettings(tab, key, value) {
 }
 
 function GetSettingsIfTrue(tab, ifkey, key, def) {
-	if (tab.global_settings_active
-		&& Object.keys(settings).includes(ifkey)
+	if (tab.global_settings_active) {
+		if (Object.keys(settings).includes(ifkey)
 		&& settings[ifkey]) {
 		return GetSettings(tab, key, def);
+		}
 	}
 	else if (Object.keys(tab.settings).includes(ifkey)
 		&& tab.settings[ifkey]){
