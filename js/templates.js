@@ -1,18 +1,18 @@
 var table_template = '<div class="text-center">\
-	<table class="table table-dark table-hover table-right" style="width: 950px;">\
+	<table class="table table-dark table-hover table-right" style="width: fit-content;">\
 		<thead>\
-			<th style="width: 50px">Slot</th>\
+			<th style="width: fit-content">Slot</th>\
 			<th style="width: 110px">Ball Type</th>\
 			<th style="width: 55px">Nr. Balls</th>\
 			<th style="width: 55px">Ball Speed</th>\
 			<th style="width: 55px">Ball Power</th>\
-			<th style="width: 75px">Speed</th>\
-			<th style="width: 75px">Power</th>\
-			<th style="width: 75px">Cost</th>\
-			<th style="width: 100px" id="%tab%_header_dmg_poison">Damage w/<br>?? Poison</th>\
-			<th style="width: 100px">Last 1shot<br>Brick Level</th>\
-			<th style="width: 100px">Last 1shot<br>Hex Level</th>\
-			<th style="width: 100px">Last 1shot<br>Shield Hex</th>\
+			<th style="width: fit-content">Speed</th>\
+			<th style="width: fit-content">Power</th>\
+			<th style="width: fit-content">Cost</th>\
+			<th style="width: fit-content" id="%tab%_header_dmg_poison">Damage w/<br>?? Poison</th>\
+			<th style="width: fit-content">Last 1shot<br>Brick Level</th>\
+			<th style="width: fit-content">Last 1shot<br>Hex Level</th>\
+			<th style="width: fit-content">Last 1shot<br>Shield Hex</th>\
 		</thead>\
 		<tr>\
 			<th>Base</th>\
@@ -315,10 +315,10 @@ var table_template = '<div class="text-center">\
 			<input id="%tab%_all_settings_active" type="checkbox" onchange="handleShowAllSettingsToggle(event)" />Show All Settings\
 		</label>\
 	</div>\
-	<table id="%tab%_mini_settings" class="table table-dark table-hover" style="width: 320px;">\
+	<table id="%tab%_mini_settings" class="table table-dark table-hover" style="width: fit-content;">\
 		<thead class="%tab%_togglerow">\
-			<th style="width: 120px;">Prestige</th>\
-			<th style="width: 40px">Value</th>\
+			<th style="width: fit-content;">Prestige</th>\
+			<th style="width: 65px">Value</th>\
 			<th style="width: 20px"></th>\
 		</thead>\
 		<tr class="%tab%_togglerow">\
@@ -460,6 +460,10 @@ var table_template = '<div class="text-center">\
 			<td>Lightning</td>\
 			<td><input type="number" id="%tab%_badges_lightning" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
+		<tr class="%tab%_togglerow">\
+			<td>Total</td>\
+			<td id="%tab%_badges_total"></td>\
+		</tr>\
 		<thead class="%tab%_togglerow">\
 			<th>Skills Tree</th>\
 			<th>Value</th>\
@@ -511,7 +515,294 @@ var table_template = '<div class="text-center">\
 		</tr>\
 	</table>\
 </div>';
-		
+
+var level_tracker_template = '\
+<div class="text-center">\
+	<table id="%tab%_table" class="table table-dark table-hover table-right" style="width: fit-content;">\
+		<thead>\
+			<th class="%tab%_show_days_togglecolumn" style="width: 70px">Days</th>\
+			<th class="%tab%_show_hours_togglecolumn" style="width: 60px">Hours</th>\
+			<th class="%tab%_show_minutes_togglecolumn" style="width: 60px">Mins</th>\
+			<th class="%tab%_show_seconds_togglecolumn" style="width: 60px">Secs</th>\
+			<th class="%tab%_show_level_togglecolumn" style="width: 115px">Level</th>\
+			<th class="%tab%_show_skipped_togglecolumn" style="width: 115px">Skipped</th>\
+			<th class="%tab%_show_level_increase_togglecolumn" style="width: fit-content">Level<br>increase</th>\
+			<th class="%tab%_show_skipped_increase_togglecolumn" style="width: fit-content">Skipped<br>increase</th>\
+			<th class="%tab%_show_skipped_percentage_togglecolumn" style="width: fit-content">Skipped %</th>\
+			<th class="%tab%_show_skipped_total_percentage_togglecolumn" style="width: fit-content">Total<br>skipped %</th>\
+			<th class="%tab%_show_level_per_minute_togglecolumn" style="width: fit-content">Level /<br> min</th>\
+			<th class="%tab%_show_level_per_hour_togglecolumn" style="width: fit-content">Level /<br> hour</th>\
+			<th class="%tab%_show_level_per_day_togglecolumn" style="width: fit-content">Level /<br> day</th>\
+			<th class="%tab%_show_24h_estimated_result_togglecolumn" style="width: fit-content">24h<br>est. result</th>\
+			<th class="%tab%_show_goal_reached_on_togglecolumn" style="width: fit-content" id="%tab%_goal_reached_on">??<br>reached on:</th>\
+			<th style="width: fit-content" id="%tab%_delete_row"></th>\
+		</thead>\
+	</table>\
+	<div class="text-left">\
+		<h3 style="margin-left: 1px">Information about the run for future reference.</h3>\
+	</div>\
+	<table id="%tab%_mini_settings" class="table table-dark table-hover" style="width: fit-content;">\
+		<thead>\
+			<th style="width: fit-content;">Slot</th>\
+			<th style="width: fit-content">Ball</th>\
+			<th style="width: fit-content">Perk</th>\
+			<th style="width: 70px">Value</th>\
+			<th style="width: fit-content">Start Time</th>\
+			<th style="width: 115px">Goal</th>\
+		</thead>\
+		<tr>\
+			<th>175</th>\
+			<td>\
+				<select id="%tab%_175_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+				</select>\
+			</td>\
+			<th>Speed</th>\
+			<td><input type="number" id="%tab%_speed" onchange="handleSettingsChange(event)" /></td>\
+			<td><input type="datetime-local" id="%tab%_start_time" onchange="handleSettingsChange(event)" lang="en-UK" /></td>\
+			<td><input type="number" id="%tab%_goal" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr>\
+			<th>7.5K</th>\
+			<td>\
+				<select id="%tab%_7500_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+				</select>\
+			</td>\
+			<th>Power</th>\
+			<td><input type="number" id="%tab%_power" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr>\
+			<th>175K</th>\
+			<td>\
+				<select id="%tab%_175k_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>15M</th>\
+			<td>\
+				<select id="%tab%_15m_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>400B</th>\
+			<td>\
+				<select id="%tab%_400b_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>10q</th>\
+			<td>\
+				<select id="%tab%_10q_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>10s</th>\
+			<td>\
+				<select id="%tab%_10s_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>100O</th>\
+			<td>\
+				<select id="%tab%_100o_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>5aa</th>\
+			<td>\
+				<select id="%tab%_5aa_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+		<tr>\
+			<th>80ac</th>\
+			<td>\
+				<select id="%tab%_80ac_ball_type" onchange="handleSettingsChange(event)">\
+					<option value="null"></option>\
+					<option value="sniper">Sniper</option>\
+					<option value="splash">Splash</option>\
+					<option value="poison">Poison</option>\
+					<option value="demo">Demo</option>\
+					<option value="scatter">Scatter</option>\
+					<option value="pierce">Pierce</option>\
+					<option value="cash">Cash</option>\
+					<option value="sword">Sword</option>\
+					<option value="fire">Fire</option>\
+					<option value="lightning">Lightning</option>\
+				</select>\
+			</td>\
+		</tr>\
+	</table>\
+</div>';
+
+var level_tracker_row_template = '\
+<tr>\
+	<td class="%tab%_show_days_togglecolumn"><input type="number" id="%tab%_%row%_days" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_hours_togglecolumn"><input type="number" id="%tab%_%row%_hours" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_minutes_togglecolumn"><input type="number" id="%tab%_%row%_minutes" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_seconds_togglecolumn"><input type="number" id="%tab%_%row%_seconds" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_level_togglecolumn"><input type="number" id="%tab%_%row%_level" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_skipped_togglecolumn"><input type="number" id="%tab%_%row%_skipped" onchange="handleChange(event)" /></td>\
+	<td class="%tab%_show_level_increase_togglecolumn" id="%tab%_%row%_level_increase"></td>\
+	<td class="%tab%_show_skipped_increase_togglecolumn" id="%tab%_%row%_skipped_increase"></td>\
+	<td class="%tab%_show_skipped_percentage_togglecolumn" id="%tab%_%row%_skipped_percentage"></td>\
+	<td class="%tab%_show_skipped_total_percentage_togglecolumn" id="%tab%_%row%_skipped_total_percentage"></td>\
+	<td class="%tab%_show_level_per_minute_togglecolumn" id="%tab%_%row%_level_per_minute"></td>\
+	<td class="%tab%_show_level_per_hour_togglecolumn" id="%tab%_%row%_level_per_hour"></td>\
+	<td class="%tab%_show_level_per_day_togglecolumn" id="%tab%_%row%_level_per_day"></td>\
+	<td class="%tab%_show_24h_estimated_result_togglecolumn" id="%tab%_%row%_24h_estimated_result"></td>\
+	<td class="%tab%_show_goal_reached_on_togglecolumn" id="%tab%_%row%_goal_reached_on"></td>\
+	<td class="deleterow"><a id="%tab%_%row%_delete_row" href="#" onclick="handleDeleteRow(event)">X</a></td>\
+</tr>\
+';
+
+var level_tracker_show_columns_template = '\
+<div class="text-left" style="margin-left: 5px">\
+	<h3>Only show the following columns:</h3>\
+	<label for="%tab%_show_days">\
+		<input id="%tab%_show_days" type="checkbox" onchange="handleSettingsChange(event)" />Days\
+	</label>\
+	<br>\
+	<label for="%tab%_show_hours">\
+		<input id="%tab%_show_hours" type="checkbox" onchange="handleSettingsChange(event)" />Hours\
+	</label>\
+	<br>\
+	<label for="%tab%_show_minutes">\
+		<input id="%tab%_show_minutes" type="checkbox" onchange="handleSettingsChange(event)" />Minutes\
+	</label>\
+	<br>\
+	<label for="%tab%_show_seconds">\
+		<input id="%tab%_show_seconds" type="checkbox" onchange="handleSettingsChange(event)" />Seconds\
+	</label>\
+	<br>\
+	<label for="%tab%_show_level">\
+		<input id="%tab%_show_level" type="checkbox" onchange="handleSettingsChange(event)" />Level\
+	</label>\
+	<br>\
+	<label for="%tab%_show_skipped">\
+		<input id="%tab%_show_skipped" type="checkbox" onchange="handleSettingsChange(event)" />Skipped\
+	</label>\
+	<br>\
+	<label for="%tab%_show_level_increase">\
+		<input id="%tab%_show_level_increase" type="checkbox" onchange="handleSettingsChange(event)" />Level Increase\
+	</label>\
+	<br>\
+	<label for="%tab%_show_skipped_increase">\
+		<input id="%tab%_show_skipped_increase" type="checkbox" onchange="handleSettingsChange(event)" />Skipped Increase\
+	</label>\
+	<br>\
+	<label for="%tab%_show_skipped_percentage">\
+		<input id="%tab%_show_skipped_percentage" type="checkbox" onchange="handleSettingsChange(event)" />Skipped Percentage\
+	</label>\
+	<br>\
+	<label for="%tab%_show_skipped_total_percentage">\
+		<input id="%tab%_show_skipped_total_percentage" type="checkbox" onchange="handleSettingsChange(event)" />Skipped Total Percentage\
+	</label>\
+	<br>\
+	<label for="%tab%_show_level_per_minute">\
+		<input id="%tab%_show_level_per_minute" type="checkbox" onchange="handleSettingsChange(event)" />Level per Minute\
+	</label>\
+	<br>\
+	<label for="%tab%_show_level_per_hour">\
+		<input id="%tab%_show_level_per_hour" type="checkbox" onchange="handleSettingsChange(event)" />Level per Hour\
+	</label>\
+	<br>\
+	<label for="%tab%_show_level_per_day">\
+		<input id="%tab%_show_level_per_day" type="checkbox" onchange="handleSettingsChange(event)" />Level per Day\
+	</label>\
+	<br>\
+	<label for="%tab%_show_24h_estimated_result">\
+		<input id="%tab%_show_24h_estimated_result" type="checkbox" onchange="handleSettingsChange(event)" />24h Estimated Result\
+	</label>\
+	<br>\
+		<label for="%tab%_show_goal_reached_on">\
+			<input id="%tab%_show_goal_reached_on" type="checkbox" onchange="handleSettingsChange(event)" />Goal Reached on:\
+		</label>\
+</div>\
+';
+
 var navbar_template = '<li id="%tab%_id" class="%active%">\
 	<a id="%tab%_name" data-toggle="tab" href="#%tab%" onclick="handleTabChange(event)">%tabname%\
 	<input id="%tab%_edit" type="button" onclick="handleTabEdit(event)" value="✎" />\

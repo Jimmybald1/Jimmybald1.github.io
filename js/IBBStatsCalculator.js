@@ -108,9 +108,9 @@ var defaulttabs = [{
 	"80ac_powerLevel": null,
 }];
 
-//StoreItem("settings", JSON.stringify(defaultsettings));
+//StoreItem("settings", defaultsettings);
 var settings = GetItem("settings", defaultsettings);
-//StoreItem("statsCalculator", JSON.stringify(defaulttabs));
+//StoreItem("statsCalculator", defaulttabs);
 var tabs = GetItem("statsCalculator", defaulttabs);
 
 // fix for older version where the data was not an array yet.
@@ -118,7 +118,7 @@ if (!Array.isArray(tabs)) {
 	tabs = [tabs];
 	tabs[0].id = "tab0";
 	tabs[0].name = "Tab0";
-	StoreItem("statsCalculator", JSON.stringify(tabs));
+	StoreItem("statsCalculator", tabs);
 }
 
 if (!Object.keys(settings).includes("boosts_ph_active") && Object.keys(settings).includes("boosts_ph")){
@@ -141,7 +141,7 @@ function GetItem(key, obj) {
 	try {
 		var json = window.localStorage.getItem(key);
 		if (json === undefined || json === null) {
-			StoreItem(key, JSON.stringify(obj));
+			StoreItem(key, obj);
 		}
 		else {
 			obj = JSON.parse(json);
@@ -158,15 +158,15 @@ function GetItem(key, obj) {
 	}
 }
 
-function StoreItem(key, text) {
-	window.localStorage.setItem(key, text);
+function StoreItem(key, obj) {
+	window.localStorage.setItem(key, JSON.stringify(obj));
 }
 
 function GetSettings(tab, key, def) {
 	if (tab.global_settings_active) {
 		if (Object.keys(settings).includes(key)
-		&& settings[key] !== null) {
-		return settings[key];
+			&& settings[key] !== null) {
+			return settings[key];
 		}
 	}
 	else if (Object.keys(tab.settings).includes(key)
@@ -180,19 +180,19 @@ function GetSettings(tab, key, def) {
 function SetSettings(tab, key, value) {
 	if (tab.global_settings_active) {
 		settings[key] = value;
-		StoreItem("settings", JSON.stringify(settings));
+		StoreItem("settings", settings);
 	}
 	else {
 		tab.settings[key] = value;
-		StoreItem("statsCalculator", JSON.stringify(tabs));
+		StoreItem("statsCalculator", tabs);
 	}
 }
 
 function GetSettingsIfTrue(tab, ifkey, key, def) {
 	if (tab.global_settings_active) {
 		if (Object.keys(settings).includes(ifkey)
-		&& settings[ifkey]) {
-		return GetSettings(tab, key, def);
+			&& settings[ifkey]) {
+			return GetSettings(tab, key, def);
 		}
 	}
 	else if (Object.keys(tab.settings).includes(ifkey)
@@ -269,16 +269,17 @@ function FormatNumber(num) {
 function handleCalculatorChange(event) {
 	var element = event.target;
 	var value = element.value;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
-	var elementid = element.id.slice(5);
+	var elementid = element.id.slice(tabsplit + 1);
 
 	if (elementid.includes("type")) {
 		console.log(tab[elementid], value);
 		tab[elementid] = value;
 	}
 	else if (elementid.includes("active")) {
-		console.log(tab.global_settings_active, element.checked);
+		console.log(tab[elementid], element.checked);
 		tab[elementid] = element.checked;
 	}
 	else {
@@ -292,16 +293,17 @@ function handleCalculatorChange(event) {
 		}
 	}
 
-	StoreItem("statsCalculator", JSON.stringify(tabs));
+	StoreItem("statsCalculator", tabs);
 	BuildStatsCalculator(tab);
 }
 
 function handleSettingsChange(event) {
 	var element = event.target;
 	var value = element.value;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
-	var elementid = element.id.slice(5);
+	var elementid = element.id.slice(tabsplit + 1);
 
 	if (elementid.includes("active")) {
 		console.log(GetSettings(tab, elementid), element.checked);
@@ -323,7 +325,8 @@ function handleSettingsChange(event) {
 
 function handleTabChange(event) {
 	var element = event.target;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
 	
 	if (tabs.includes(tab)) {
@@ -336,61 +339,72 @@ function handleNewTab(event) {
 	var newindex = tabs.length;			
 	
 	if (tabs.length > 0) {
-		tabs.push(structuredClone(tabs[0]));				
+		for (var i = 0; i < tabs.length; i++) {
+			if (tabs.find(e => e.id === 'tab' + i) === undefined) {
+				newindex = i;
+				break;
+			}
+		}
+		
+		tabs.push(structuredClone(tabs[0]));
 	}
 	else {
 		tabs.push(structuredClone(defaulttabs[0]))
 	}
+	
 	var tab = tabs[newindex];
 	tab.id = "tab" + newindex;
-	tab.name = "Tab" + newindex;
+	tab.name = "Tab " + newindex;
 	
 	console.log('Create new tab ' + tab.name);
-	StoreItem("statsCalculator", JSON.stringify(tabs));
+	StoreItem("statsCalculator", tabs);
 	
 	$(navbar_template.replaceAll('%tab%', tab.id).replaceAll('%tabname%', tab.name).replaceAll('%active%', '')).insertBefore('#newtab_id');
 	$('#tab_content').append('<div id="' + tab.id + '" class="tab-pane">' + table_template.replaceAll('%tab%', tab.id) + '</div>');
-	BuildStatsCalculator(tabs[newindex]);
+	BuildStatsCalculator(tab);
 	$('#' + tab.id + '_name').tab('show');
 }
 
 function handleShowAllSettingsToggle(event) {
 	var element = event.target;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
 	console.log(tab.all_settings_active, element.checked);
 	tab.all_settings_active = element.checked;
 	
-	$('.' + tab.id + '_togglerow').toggleClass('hiderow');
+	$('.' + id + '_togglerow').toggleClass('hide');
 	
-	StoreItem("statsCalculator", JSON.stringify(tabs));
+	StoreItem("statsCalculator", tabs);
 }
 
 function handleTabEdit(event) {
 	var element = event.target;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
 	
-	var newname = prompt('Rename tab ' + tab.name)
+	var newname = prompt('Rename tab ' + tab.name, tab.name);
 	if (newname !== null && newname !== "null") {
 		console.log('Rename tab ' + tab.name + ' to ' + newname);
-		$('#' + tab.id + '_name').html($('#' + tab.id + '_name').html().replace(tab.name, newname));
+		$('#' + id + '_name').html($('#' + id + '_name').html().replace(tab.name, newname));
 		tab.name = newname;
-		StoreItem("statsCalculator", JSON.stringify(tabs));
+		StoreItem("statsCalculator", tabs);
 	}
 }
 
 function handleTabRemove(event) {
 	var element = event.target;
-	var id = element.id.slice(0, 4);
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
 	var tab = tabs.find(e => e.id === id);
 	
 	if (confirm('Are you sure you want to delete tab ' + tab.name)) {
 		console.log('Delete tab ' + tab.name);
 		tabs.splice(tabs.indexOf(tab), 1);
-		$('#' + tab.id + '_id').remove();
-		$('#' + tab.id).remove();
-		StoreItem("statsCalculator", JSON.stringify(tabs));
+		$('#' + id + '_id').remove();
+		$('#' + id).remove();
+		StoreItem("statsCalculator", tabs);
 		if (tabs.length > 0) {
 			BuildStatsCalculator(tabs[0]);
 			$('#' + tabs[0].id + '_name').tab('show');
@@ -410,7 +424,7 @@ function BuildPage() {
 	
 	// Build Html of all tabs				
 	for (var i = 0; i < tabs.length; i++) {
-		var id = "tab" + i;
+		var id = tabs[i].id;
 		$('#tab_content').append('<div id="' + id + '" class="tab-pane ' + ((i == 0) ? 'active' : '') + '">' + table_template.replaceAll('%tab%', id) + '</div>');
 	}
 	
@@ -440,6 +454,7 @@ function BuildStatsCalculator(tab) {
 	$(tagid + 'totalcost').html(FormatNumber(totalcost));
 	
 	// Tab-Settings
+	var totalbadges = 0;
 	var tabsettings = ((tab.global_settings_active) ? settings : tab.settings);
 	for (var key in tabsettings) {
 		if (key.includes("active")) {
@@ -448,10 +463,16 @@ function BuildStatsCalculator(tab) {
 		else {
 			$(tagid + key).val(GetSettings(tab, key, null));
 		}
+		
+		if (key.includes("badges")) {
+			totalbadges += GetSettings(tab, key, null);
+		}
 	}
+
+	$(tagid + 'badges_total').html(totalbadges);
 	
 	if (!tab.all_settings_active) {
-		$('.' + tab.id + '_togglerow').addClass('hiderow');
+		$('.' + tab.id + '_togglerow').addClass('hide');
 	}
 	
 	var powerCard = GetSettings(tab, 'cards_power_value', null);
@@ -515,11 +536,11 @@ function CalculateRow(tab, slot) {
 	if (balltype !== "poison" && balltype !== "cash") {
 		// Green bricks
 		var bricklevel = CalculateLastBrickLevel(damage);
-		$(tagid + slot + '_1shot_brick').html(bricklevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		$(tagid + slot + '_1shot_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 		
 		// Hex bricks
 		var hexlevel = CalculateLastBrickLevel(damage / 25);
-		$(tagid + slot + '_1shot_hex').html(hexlevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		$(tagid + slot + '_1shot_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 		
 		// Shield Hex bricks
 		var shielddamage = damage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
@@ -527,7 +548,7 @@ function CalculateRow(tab, slot) {
 			shielddamage = damage / 25;
 		}				
 		var shieldlevel = CalculateLastBrickLevel(shielddamage);
-		$(tagid + slot + '_1shot_shield').html(shieldlevel.toLocaleString("en-US", {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		$(tagid + slot + '_1shot_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 	}
 }
 

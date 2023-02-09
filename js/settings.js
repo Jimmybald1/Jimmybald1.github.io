@@ -97,9 +97,11 @@ function handleChange(event) {
 	}
 
 	StoreItem("settings", JSON.stringify(settings));
+	BuildSettingsTable();
 }
 
 function BuildSettingsTable() {
+	var totalbadges = 0;
 	for (var key in settings) {
 		if (key.includes("active")) {
 			$('#' + key).prop('checked', settings[key]);
@@ -107,5 +109,26 @@ function BuildSettingsTable() {
 		else {
 			$('#' + key).val(settings[key]);
 		}
+		
+		if (key.includes("badges")) {
+			totalbadges += settings[key];
+		}
+	}
+	
+	$('#badges_total').html(totalbadges);
+	
+	var powerCard = settings['cards_power_value'];
+	if (powerCard === 2.4
+		|| powerCard === 2.8
+		|| powerCard === 3.2
+		|| powerCard === 3.6) {
+		alert('Your power card value is wrong, the card in game has a bug.\n\
+These are the possible values:\n\
+Level 1: 1.5\n\
+Level 2: 2.0\n\
+Level 3: 2.5\n\
+Level 4: 3.0\n\
+Level 5: 3.5\n\
+Level 6: 4.0')
 	}
 }

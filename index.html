@@ -3,8 +3,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>IBB Stats Calculator</title>
-        <meta name="description" content="Unofficial Calculator for IBB Ball Upgrades">
+        <title>Home page IBB Calculators</title>
+        <meta name="description" content="Home page for IBB Calculators">
         <!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -15,6 +15,138 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
+	<script type="text/javascript">
+		function GetItem(key) {	
+			try {
+				var obj = {};
+				var json = window.localStorage.getItem(key);
+				if (json === undefined || json === null) {
+					return null;
+				}
+				else {
+					obj = JSON.parse(json);
+				}
+			
+				console.log(obj);
+				return obj;
+			}
+			catch (e) {
+				if (e.name === "NS_ERROR_FILE_CORRUPTED") {
+					alert("Somehow your local storage file got corrupted. You will have to manually clear this.")
+					return null;
+				}
+			}
+		}
+
+		function StoreItem(key, text) {
+			window.localStorage.setItem(key, text);
+		}
+		
+		function importSettingsFile(event) {
+			$('#import_errors').html("");
+			var file = event.target.files.item(0)
+			file.text()
+				.then((data) => {
+					var storage = {};
+					var clipboard = data;
+					try {
+						storage = JSON.parse(clipboard);
+						console.log(storage);
+					}
+					catch (e) {
+						if (e instanceof SyntaxError) {
+							$('#import_errors').html("not valid import data");
+							return;
+						}
+					}
+					
+					if (storage !== null) {
+						if (storage?.settings !== null) {
+							StoreItem("settings", JSON.stringify(storage.settings));
+						}
+						if (storage?.statsCalculator !== null) {
+							StoreItem("statsCalculator", JSON.stringify(storage.statsCalculator));
+						}
+						if (storage?.levelTracker !== null) {
+							StoreItem("levelTracker", JSON.stringify(storage.levelTracker));
+						}
+					}
+				});
+				
+			$('#import_message').html("Successfully imported data.");
+		}
+		
+		function exportSettingsFile() {
+			var filename = "IBB_Website_backup.json";
+			
+			var settings = GetItem("settings");
+			var statscalc = GetItem("statsCalculator");
+			var leveltracker = GetItem("levelTracker");
+			var storage = {
+				"settings": settings,
+				"statsCalculator": statscalc,
+				"levelTracker": leveltracker,
+			};
+			var text = JSON.stringify(storage, null, 4);
+			
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			element.setAttribute('download', filename);
+
+			element.style.display = 'none';
+			document.body.appendChild(element);
+
+			element.click();
+
+			document.body.removeChild(element);
+		}
+		
+		function importSettingsClipboard(event) {
+			$('#import_errors').html("");
+			
+			navigator.clipboard.readText()
+				.then((data) => {
+					var storage = {};
+					var clipboard = data;
+					try {
+						storage = JSON.parse(clipboard);
+						console.log(storage);
+					}
+					catch (e) {
+						if (e instanceof SyntaxError) {
+							$('#import_errors').html("not valid import data");
+							return;
+						}
+					}
+					
+					if (storage !== null) {
+						if (storage?.settings !== null) {
+							StoreItem("settings", JSON.stringify(storage.settings));
+						}
+						if (storage?.statsCalculator !== null) {
+							StoreItem("statsCalculator", JSON.stringify(storage.statsCalculator));
+						}
+						if (storage?.levelTracker !== null) {
+							StoreItem("levelTracker", JSON.stringify(storage.levelTracker));
+						}
+					}
+				});
+		}
+		
+		function exportSettingsClipboard(event) {
+			$('#import_errors').html("");
+			
+			var settings = GetItem("settings");
+			var statscalc = GetItem("statsCalculator");
+			var leveltracker = GetItem("levelTracker");
+			var storage = {
+				"settings": settings,
+				"statsCalculator": statscalc,
+				"levelTracker": leveltracker,
+			};
+			navigator.clipboard.writeText(JSON.stringify(storage, null, 4));
+		}
+	</script>
     <body>
         <ul class="horizontal">
             <li>
@@ -24,11 +156,51 @@
                 <a href="IBBStatsCalculator.html">IBB Stats Calculator</a>
             </li>
             <li>
+                <a href="IBBLevelTracker.html">IBB Level Tracker</a>
+            </li>
+            <li>
                 <a href="settings.html">Settings</a>
             </li>
+			<div class="version">Version 1.5</div>
         </ul>
-        <h1>Welcome</h1>
-        <h3>This page is still under development. Feel free to try out the calculator and report bugs when you find any.</h3>
-        <p>Only tested in Chrome so far.</p>
+		<p style="margin-left: 5px">
+			<h3 style="margin-left: 5px">Future plans:</h3>
+			<label style="margin-left: 5px">- Able to re-order tabs</label>
+			<br>
+			<label style="margin-left: 5px; margin-bottom: 20px;">- More sheets added (Brick HP calculator probably)</label>
+		</p>
+		<p style="margin: 5px">
+			<label>Import Settings File</label>
+			<br>
+			<label for="import_settings_file" class="custom-file-upload">
+				<input id="import_settings_file" type="file" accept=".json" onchange="importSettingsFile(event)" />
+				Choose File...
+			</label>
+		</p>
+		<p style="margin: 5px">
+			<br>
+			<label>Export Settings File</label>
+			<br>
+			<label class="custom-file-upload" onclick="exportSettingsFile()">
+				Download
+			</label>
+		</p>
+		<p style="margin: 5px">
+			<br>
+			<label>Copy/Paste Settings With Clipboard</label>
+			<br>
+			<label class="custom-file-upload" onclick="exportSettingsClipboard()">
+				Copy
+			</label>
+			<label class="custom-file-upload" onclick="importSettingsClipboard()">
+				Paste
+			</label>
+		</p>
+		<p>
+			<label id="import_errors" style="margin-left: 10px; color: orangered;" />
+		</p>
+		<p>
+			<label id="import_message" style="margin-left: 10px; color: #04AA6D" />
+		</p>
     </body>
 </html>

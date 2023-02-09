@@ -3,8 +3,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>IBB Stats Calculator</title>
-        <meta name="description" content="Unofficial Calculator for IBB Ball Upgrades">
+        <title>IBB Personal Settings</title>
+        <meta name="description" content="IBB Personal Settings">
         <!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -26,8 +26,12 @@
                 <a href="IBBStatsCalculator.html">IBB Stats Calculator</a>
             </li>
             <li>
+                <a href="IBBLevelTracker.html">IBB Level Tracker</a>
+            </li>
+            <li>
                 <a class="active" href="settings.html">Settings</a>
             </li>
+			<div class="version">Version 1.5</div>
         </ul>
         <div class="text-center">
             <table class="table table-dark table-hover" style="width: 320px;">
@@ -174,6 +178,10 @@
                 <tr>
                     <td>Lightning</td>
                     <td><input type="number" id="badges_lightning" onchange="handleChange(event)" /></td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td id="badges_total"></td>
                 </tr>
                 <thead>
                     <th>Skills Tree</th>
