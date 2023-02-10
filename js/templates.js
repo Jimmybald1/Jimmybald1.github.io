@@ -13,6 +13,9 @@ var table_template = '<div class="text-center">\
 			<th style="width: fit-content">Last 1shot<br>Brick Level</th>\
 			<th style="width: fit-content">Last 1shot<br>Hex Level</th>\
 			<th style="width: fit-content">Last 1shot<br>Shield Hex</th>\
+			<th style="width: fit-content">Chain Only<br>Brick Level</th>\
+			<th style="width: fit-content">Chain Only<br>Hex Level</th>\
+			<th style="width: fit-content">Chain Only<br>Shield Hex</th>\
 		</thead>\
 		<tr>\
 			<th>Base</th>\
@@ -32,6 +35,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_base_1shot_brick"></td>\
 			<td id="%tab%_base_1shot_hex"></td>\
 			<td id="%tab%_base_1shot_shield"></td>\
+			<td id="%tab%_base_chain_brick"></td>\
+			<td id="%tab%_base_chain_hex"></td>\
+			<td id="%tab%_base_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>175</th>\
@@ -52,6 +58,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_175_1shot_brick"></td>\
 			<td id="%tab%_175_1shot_hex"></td>\
 			<td id="%tab%_175_1shot_shield"></td>\
+			<td id="%tab%_175_chain_brick"></td>\
+			<td id="%tab%_175_chain_hex"></td>\
+			<td id="%tab%_175_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>7.5k</th>\
@@ -74,6 +83,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_7500_1shot_brick"></td>\
 			<td id="%tab%_7500_1shot_hex"></td>\
 			<td id="%tab%_7500_1shot_shield"></td>\
+			<td id="%tab%_7500_chain_brick"></td>\
+			<td id="%tab%_7500_chain_hex"></td>\
+			<td id="%tab%_7500_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>175K</th>\
@@ -97,6 +109,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_175k_1shot_brick"></td>\
 			<td id="%tab%_175k_1shot_hex"></td>\
 			<td id="%tab%_175k_1shot_shield"></td>\
+			<td id="%tab%_175k_chain_brick"></td>\
+			<td id="%tab%_175k_chain_hex"></td>\
+			<td id="%tab%_175k_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>15M</th>\
@@ -122,6 +137,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_15m_1shot_brick"></td>\
 			<td id="%tab%_15m_1shot_hex"></td>\
 			<td id="%tab%_15m_1shot_shield"></td>\
+			<td id="%tab%_15m_chain_brick"></td>\
+			<td id="%tab%_15m_chain_hex"></td>\
+			<td id="%tab%_15m_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>400B</th>\
@@ -150,6 +168,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_400b_1shot_brick"></td>\
 			<td id="%tab%_400b_1shot_hex"></td>\
 			<td id="%tab%_400b_1shot_shield"></td>\
+			<td id="%tab%_400b_chain_brick"></td>\
+			<td id="%tab%_400b_chain_hex"></td>\
+			<td id="%tab%_400b_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>10q</th>\
@@ -178,6 +199,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_10q_1shot_brick"></td>\
 			<td id="%tab%_10q_1shot_hex"></td>\
 			<td id="%tab%_10q_1shot_shield"></td>\
+			<td id="%tab%_10q_chain_brick"></td>\
+			<td id="%tab%_10q_chain_hex"></td>\
+			<td id="%tab%_10q_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>10s</th>\
@@ -206,6 +230,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_10s_1shot_brick"></td>\
 			<td id="%tab%_10s_1shot_hex"></td>\
 			<td id="%tab%_10s_1shot_shield"></td>\
+			<td id="%tab%_10s_chain_brick"></td>\
+			<td id="%tab%_10s_chain_hex"></td>\
+			<td id="%tab%_10s_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>100O</th>\
@@ -234,6 +261,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_100o_1shot_brick"></td>\
 			<td id="%tab%_100o_1shot_hex"></td>\
 			<td id="%tab%_100o_1shot_shield"></td>\
+			<td id="%tab%_100o_chain_brick"></td>\
+			<td id="%tab%_100o_chain_hex"></td>\
+			<td id="%tab%_100o_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>5aa</th>\
@@ -262,6 +292,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_5aa_1shot_brick"></td>\
 			<td id="%tab%_5aa_1shot_hex"></td>\
 			<td id="%tab%_5aa_1shot_shield"></td>\
+			<td id="%tab%_5aa_chain_brick"></td>\
+			<td id="%tab%_5aa_chain_hex"></td>\
+			<td id="%tab%_5aa_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<th>80ac</th>\
@@ -290,6 +323,9 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_80ac_1shot_brick"></td>\
 			<td id="%tab%_80ac_1shot_hex"></td>\
 			<td id="%tab%_80ac_1shot_shield"></td>\
+			<td id="%tab%_80ac_chain_brick"></td>\
+			<td id="%tab%_80ac_chain_hex"></td>\
+			<td id="%tab%_80ac_chain_shield"></td>\
 		</tr>\
 		<tr>\
 			<td></td>\
@@ -300,6 +336,9 @@ var table_template = '<div class="text-center">\
 			<td></td>\
 			<td></td>\
 			<td id="%tab%_totalcost"></td>\
+			<td></td>\
+			<td></td>\
+			<td></td>\
 			<td></td>\
 			<td></td>\
 			<td></td>\

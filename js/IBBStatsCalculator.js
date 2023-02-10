@@ -503,6 +503,9 @@ function CalculateRow(tab, slot) {
 		$(tagid + slot + '_1shot_brick').html("");
 		$(tagid + slot + '_1shot_hex').html("");
 		$(tagid + slot + '_1shot_shield').html("");
+		$(tagid + slot + '_chain_brick').html("");
+		$(tagid + slot + '_chain_hex').html("");
+		$(tagid + slot + '_chain_shield').html("");
 		return;
 	}
 
@@ -521,8 +524,11 @@ function CalculateRow(tab, slot) {
 	
 	// Damage with x Poison
 	var damage = null;
+	var poisonpower = 1;
 	if (balltype !== "poison" && balltype !== "cash") {
-		damage = CalculateDamageWithPoison(tab, power);
+		const temp = CalculateDamageWithPoison(tab, balltype, power);
+		damage = temp.damage;
+		poisonpower = temp.poisonpower;
 		if (damage !== null) {
 			$(tagid + slot + '_dmg_poison').html(FormatNumber(damage));
 		}
@@ -549,6 +555,25 @@ function CalculateRow(tab, slot) {
 		}				
 		var shieldlevel = CalculateLastBrickLevel(shielddamage);
 		$(tagid + slot + '_1shot_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+	}
+	
+	// Lightning chain shenanigans
+	if (balltype === "lightning") {
+		// Ignoring catalyst, it only applies when the chain hits a poisoned brick, but not when only the ball hits a poisoned brick. (it will still apply poison in both cases)
+		var chaindamage = 0.3 * power * poisonpower; //* GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
+		
+		// Green bricks
+		var bricklevel = CalculateLastBrickLevel(chaindamage);
+		$(tagid + slot + '_chain_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		
+		// Hex bricks
+		var hexlevel = CalculateLastBrickLevel(chaindamage / 25);
+		$(tagid + slot + '_chain_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		
+		// Shield Hex bricks (assume only 1 part hits shield, if both ball and chain hit shield, shield modifier and shield pen should be quadratic)
+		var shielddamage = chaindamage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
+		var shieldlevel = CalculateLastBrickLevel(shielddamage);
+		$(tagid + slot + '_chain_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));		
 	}
 }
 
@@ -635,14 +660,14 @@ function SkillsTreeModifier(tab, balltype, stat, def) {
 	return GetSettings(tab, key, def);
 }
 
-function CalculateDamageWithPoison(tab, otherpower) {
+function CalculateDamageWithPoison(tab, balltype, otherpower) {
 	var tagid = '#' + tab.id + '_';
-	var poisonSlot = null;
+	var poisonslot = null;
 	for (var i in slots) {
 		if (tab[slots[i] + "_type"] === "poison") {
-			poisonSlot = slots[i];
-			$(tagid + 'header_dmg_poison').html("Damage w/<br>" + poisonSlot + " Poison");
-			if (poisonSlot === "7500") {
+			poisonslot = slots[i];
+			$(tagid + 'header_dmg_poison').html("Damage w/<br>" + poisonslot + " Poison");
+			if (poisonslot === "7500") {
 				$(tagid + 'header_dmg_poison').html("Damage w/<br>7.5k Poison");
 			}
 			
@@ -650,14 +675,26 @@ function CalculateDamageWithPoison(tab, otherpower) {
 		}
 	}
 	
-	if (poisonSlot === null) {
+	if (poisonslot === null) {
 		$(tagid + 'header_dmg_poison').html("Damage w/<br>?? Poison");
 		return null;
 	}
 	
-	var poisonDamage = CalculatePower(tab, "poison", poisonSlot);
-	var damage = otherpower * poisonDamage * GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
-	return damage;
+	var poisonpower = CalculatePower(tab, "poison", poisonslot);
+	if (balltype === "lightning") {
+		var lightningdamage = otherpower * poisonpower;
+		var chaindamage = 0.3 * lightningdamage * poisonpower;
+		var catalyst = GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
+		return {
+			damage: (lightningdamage * catalyst) + (chaindamage * catalyst),
+			poisonpower: poisonpower,
+		};
+	}
+	
+	return {
+		damage: otherpower * poisonpower * GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1),
+		poisonpower: poisonpower,
+	};
 }
 
 function CalculateLastBrickLevel(balldamage) {
