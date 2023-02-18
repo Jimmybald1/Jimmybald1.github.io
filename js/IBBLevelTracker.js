@@ -148,6 +148,10 @@ function handleSettingsChange(event) {
 		console.log(tab[elementid], element.checked);
 		tab[elementid] = element.checked;
 	}
+	else if (elementid.includes("type")) {
+		console.log(tab[elementid], value);
+		tab[elementid] = value;
+	}
 	else if (elementid.includes("active")) {
 		console.log(tab[elementid], element.checked);
 		tab[elementid] = element.checked;
