@@ -1,4 +1,5 @@
 $(document).ready( function () {
-    console.log('version');
-    $('.version').html('Version 1.6.2');
+    var version = 'Version 1.6.2'
+    //console.log(version);
+    $('.version').html(version);
   });

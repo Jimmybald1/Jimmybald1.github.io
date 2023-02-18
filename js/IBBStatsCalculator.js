@@ -1,3 +1,8 @@
+var defaultactivetab = {
+	"ibbleveltracker": 0,
+	"ibbstatscalculator": 0,
+}
+
 var defaultsettings = {
 	"prestige_speed": 3.3,
 	"prestige_power": 11.3,
@@ -108,10 +113,9 @@ var defaulttabs = [{
 	"80ac_powerLevel": null,
 }];
 
-//StoreItem("settings", defaultsettings);
 var settings = GetItem("settings", defaultsettings);
-//StoreItem("statsCalculator", defaulttabs);
 var tabs = GetItem("statsCalculator", defaulttabs);
+var activeTab = GetItem("activeTab", defaultactivetab);
 
 // fix for older version where the data was not an array yet.
 if (!Array.isArray(tabs)) {
@@ -429,12 +433,16 @@ function BuildPage() {
 	}
 	
 	if (tabs.length > 0) {
-		BuildStatsCalculator(tabs[0]);
+		BuildStatsCalculator(tabs[activeTab.ibbstatscalculator]);
 	}
 }		
 
 function BuildStatsCalculator(tab) {
 	var tagid = '#' + tab.id + '_';
+
+	activeTab.ibbstatscalculator = tabs.indexOf(tab);
+	StoreItem('activeTab', activeTab);
+	$('#' + tab.id + '_name').tab('show');
 	
 	// Calculator
 	for (var key in tab) {

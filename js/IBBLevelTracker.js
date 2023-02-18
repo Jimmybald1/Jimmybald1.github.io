@@ -1,3 +1,8 @@
+var defaultactivetab = {
+	"ibbleveltracker": 0,
+	"ibbstatscalculator": 0,
+}
+
 var defaulttabs = [{
 	"id": "tab0",
 	"name": "tab0",
@@ -65,8 +70,8 @@ var defaulttabs = [{
 	}]
 }];
 
-//StoreItem("levelTracker", defaulttabs);
 var tabs = GetItem("levelTracker", defaulttabs);
+var activeTab = GetItem("activeTab", defaultactivetab);
 
 function GetItem(key, obj) {	
 	try {
@@ -332,12 +337,16 @@ function BuildPage() {
 	}
 	
 	if (tabs.length > 0) {
-		BuildLevelTracker(tabs[0]);
+		BuildLevelTracker(tabs[activeTab.ibbleveltracker]);
 	}
 }		
 
 function BuildLevelTracker(tab) {
 	var tagid = '#' + tab.id + '_';
+
+	activeTab.ibbleveltracker = tabs.indexOf(tab);
+	StoreItem('activeTab', activeTab);
+	$('#' + tab.id + '_name').tab('show');
 	
 	// Fill in settings
 	for (var key in tab) {
