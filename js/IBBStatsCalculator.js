@@ -536,17 +536,25 @@ function CalculateRow(tab, slot) {
 			damage = power;
 			$(tagid + slot + '_dmg_poison').html("");
 		}
-	}
-	
-	// Last 1 shots.			
-	if (balltype !== "poison" && balltype !== "cash") {
+
+		// Last 1 shots.
 		// Green bricks
 		var bricklevel = CalculateLastBrickLevel(damage);
-		$(tagid + slot + '_1shot_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		if (bricklevel > 100e6) {
+			$(tagid + slot + '_1shot_brick').html(FormatNumber(bricklevel));
+		}
+		else {
+			$(tagid + slot + '_1shot_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
 		
 		// Hex bricks
 		var hexlevel = CalculateLastBrickLevel(damage / 25);
-		$(tagid + slot + '_1shot_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		if (hexlevel > 100e6) {
+			$(tagid + slot + '_1shot_hex').html(FormatNumber(hexlevel));
+		}
+		else {
+			$(tagid + slot + '_1shot_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
 		
 		// Shield Hex bricks
 		var shielddamage = damage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
@@ -554,7 +562,22 @@ function CalculateRow(tab, slot) {
 			shielddamage = damage / 25;
 		}				
 		var shieldlevel = CalculateLastBrickLevel(shielddamage);
-		$(tagid + slot + '_1shot_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		if (shieldlevel > 100e6) {
+			$(tagid + slot + '_1shot_shield').html(FormatNumber(shieldlevel));
+		}
+		else {
+			$(tagid + slot + '_1shot_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
+	}
+	else {		
+		$(tagid + slot + '_dmg_poison').html("");
+		$(tagid + slot + '_1shot_brick').html("");
+		$(tagid + slot + '_1shot_hex').html("");
+		$(tagid + slot + '_1shot_shield').html("");
+		$(tagid + slot + '_chain_brick').html("");
+		$(tagid + slot + '_chain_hex').html("");
+		$(tagid + slot + '_chain_shield').html("");
+		return;
 	}
 	
 	// Lightning chain shenanigans
@@ -564,16 +587,31 @@ function CalculateRow(tab, slot) {
 		
 		// Green bricks
 		var bricklevel = CalculateLastBrickLevel(chaindamage);
-		$(tagid + slot + '_chain_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		if (bricklevel > 100e6) {
+			$(tagid + slot + '_chain_brick').html(FormatNumber(bricklevel));
+		}
+		else {
+			$(tagid + slot + '_chain_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
 		
 		// Hex bricks
 		var hexlevel = CalculateLastBrickLevel(chaindamage / 25);
-		$(tagid + slot + '_chain_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+		if (hexlevel > 100e6) {
+			$(tagid + slot + '_chain_hex').html(FormatNumber(hexlevel));
+		}
+		else {
+			$(tagid + slot + '_chain_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
 		
 		// Shield Hex bricks (assume only 1 part hits shield, if both ball and chain hit shield, shield modifier and shield pen should be quadratic)
 		var shielddamage = chaindamage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
 		var shieldlevel = CalculateLastBrickLevel(shielddamage);
-		$(tagid + slot + '_chain_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));		
+		if (shieldlevel > 100e6) {
+			$(tagid + slot + '_chain_shield').html(FormatNumber(shieldlevel));
+		}
+		else {
+			$(tagid + slot + '_chain_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+		}
 	}
 }
 
