@@ -226,7 +226,6 @@ function handleNewTab(event) {
 	$(level_tracker_show_columns_template.replaceAll('%tab%', tab.id)).insertAfter('#' + tab.id + '_mini_settings');
 
 	BuildLevelTracker(tab);
-	$('#' + tab.id + '_name').tab('show');
 }
 
 function handleTabEdit(event) {
@@ -258,7 +257,6 @@ function handleTabRemove(event) {
 		StoreItem("levelTracker", tabs);
 		if (tabs.length > 0) {
 			BuildLevelTracker(tabs[0]);
-			$('#' + tabs[0].id + '_name').tab('show');
 		}
 	}
 }

@@ -366,7 +366,6 @@ function handleNewTab(event) {
 	$(navbar_template.replaceAll('%tab%', tab.id).replaceAll('%tabname%', tab.name).replaceAll('%active%', '')).insertBefore('#newtab_id');
 	$('#tab_content').append('<div id="' + tab.id + '" class="tab-pane">' + table_template.replaceAll('%tab%', tab.id) + '</div>');
 	BuildStatsCalculator(tab);
-	$('#' + tab.id + '_name').tab('show');
 }
 
 function handleShowAllSettingsToggle(event) {
@@ -411,7 +410,6 @@ function handleTabRemove(event) {
 		StoreItem("statsCalculator", tabs);
 		if (tabs.length > 0) {
 			BuildStatsCalculator(tabs[0]);
-			$('#' + tabs[0].id + '_name').tab('show');
 		}
 	}
 }
