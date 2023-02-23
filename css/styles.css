@@ -98,3 +98,6 @@ input[type=datetime-local] {
     border-color: #555;
 }
 
+.hide {
+	display: none;
+}
