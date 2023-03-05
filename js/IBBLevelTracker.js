@@ -22,7 +22,7 @@ var defaulttabs = [{
 	"speed": 4,
 	"start_time": "2023-02-02T00:00",
 	"goal": 30000000,
-	"ascending_active": false,
+	"direction_type": "desc",
 
 	"show_days": false,
 	"show_hours": true,
@@ -404,26 +404,114 @@ function CalculateRow(tab, index) {
 		return;
 	}
 
-	var levelincrease = row?.level - ((prevrow !== null) ? prevrow?.level : 0);
+	var levelincrease = CalcLevelIncrease(row, prevrow).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
 	$(tagid + 'level_increase').html(levelincrease);
 
-	var skippedincrease = row?.skipped - ((prevrow !== null) ? prevrow?.skipped : 0);
+	var skippedincrease = CalcSkippedIncrease(row, prevrow).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
 	$(tagid + 'skipped_increase').html(skippedincrease);
-	$(tagid + 'skipped_percentage').html((skippedincrease / levelincrease * 100)?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%');
-	$(tagid + 'skipped_total_percentage').html((row?.skipped / row?.level * 100)?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%');
 
-	var prevseconds = ((prevrow !== null) ? prevrow?.seconds + (prevrow?.minutes * 60) + (prevrow?.hours * 3600) + (prevrow?.days * 3600 * 24) : 24 * 3600);
-	var seconds = row?.seconds + (row?.minutes * 60) + (row?.hours * 3600) + (row?.days * 3600 * 24);
-	var levelperseconds = levelincrease / (tab?.ascending_active ? (seconds - prevseconds) : (prevseconds - seconds));
-	$(tagid + 'level_per_minute').html((levelperseconds * 60)?.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-	$(tagid + 'level_per_hour').html((levelperseconds * 3600)?.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-	$(tagid + 'level_per_day').html((levelperseconds * 3600 * 24)?.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+	var skippedpercentage = CalcSkippedPercentage(row, prevrow).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
+	$(tagid + 'skipped_percentage').html(skippedpercentage);
 
-	var timeleft = (tab?.ascending_active ? ((seconds < (3600 * 24)) ? ((3600 * 24) - seconds) : 0) : seconds)
-	$(tagid + '24h_estimated_result').html((row?.level + (timeleft * levelperseconds))?.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+	var skippedtotalpercentage = CalcSkippedTotalPercentage(row, prevrow).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
+	$(tagid + 'skipped_total_percentage').html(skippedtotalpercentage);
 
-	var levelsleft = tab?.goal !== null ? tab?.goal - row?.level : 0;
-	var date = new Date(tab?.start_time);
-	date.setSeconds(date.getSeconds() + (levelsleft / levelperseconds));
-	$(tagid + 'goal_reached_on').html(date.toLocaleDateString(undefined));
+	var levelperminute = (CalcLevelPerSecond(row, prevrow, tab?.direction_type) * 60).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+	$(tagid + 'level_per_minute').html(levelperminute);
+	var levelperhour = (CalcLevelPerSecond(row, prevrow, tab?.direction_type) * 3600).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+	$(tagid + 'level_per_hour').html(levelperhour);
+	var levelperday = (CalcLevelPerSecond(row, prevrow, tab?.direction_type) * 3600 * 24).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+	$(tagid + 'level_per_day').html(levelperday);
+
+	var estimatedresult = Calc24hEstimatedResult(row, prevrow, tab?.direction_type).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+	$(tagid + '24h_estimated_result').html(estimatedresult);
+
+	var goalreachedon = CalcGoalReachedOn(row, prevrow, tab?.direction_type, tab?.start_time, tab?.goal).toLocaleString();
+	$(tagid + 'goal_reached_on').html(goalreachedon);
+}
+
+function CalcLevelIncrease(row, prevrow) {
+	if (prevrow?.level === undefined) {
+		return row.level - 0;
+	}
+	
+	return row.level - prevrow.level;
+}
+
+function CalcSkippedIncrease(row, prevrow) {
+	if (prevrow?.skipped === undefined) {
+		return row.skipped - 0;
+	}
+	
+	return row.skipped - prevrow.skipped;
+}
+
+function CalcSkippedPercentage(row, prevrow) {
+	var levelincrease = CalcLevelIncrease(row, prevrow);
+	var skippedincrease = CalcSkippedIncrease(row, prevrow);
+	
+	return skippedincrease / levelincrease * 100;
+}
+
+function CalcSkippedTotalPercentage(row, prevrow) {
+	var levelincrease = CalcLevelIncrease(row, null);
+	var skippedincrease = CalcSkippedIncrease(row, null);
+	
+	return skippedincrease / levelincrease * 100;
+}
+
+function CalcSeconds(row, direction) {
+	if (row === null) {
+		return GetByDirection(direction, 24 * 3600, 0);
+	}
+	
+	var seconds = ((row?.seconds === undefined) ? 0 : row.seconds);
+	var minutes = ((row?.minutes === undefined) ? 0 : row.minutes);
+	var hours = ((row?.hours === undefined) ? 0 : row.hours);
+	var days = ((row?.days === undefined) ? 0 : row.days);
+	
+	return seconds + (minutes * 60) + (hours * 3600) + (days * 24 * 3600);
+}
+
+function CalcSecondIncrease(row, prevrow, direction) {
+	var seconds = CalcSeconds(row, direction);
+	var prevseconds = CalcSeconds(prevrow, direction);
+	return GetByDirection(direction, prevseconds - seconds, seconds - prevseconds);
+}
+
+function CalcLevelPerSecond(row, prevrow, direction) {
+	var levelincrease = CalcLevelIncrease(row, prevrow);
+	var secondincrease = CalcSecondIncrease(row, prevrow, direction);
+	return levelincrease / secondincrease;
+}
+
+function Calc24hEstimatedResult(row, prevrow, direction) {
+	var levelperseconds = CalcLevelPerSecond(row, prevrow, direction);
+	var seconds = CalcSeconds(row, direction);
+	return GetByDirection(direction, row.level + (levelperseconds * seconds), ((seconds < 24 * 3600) ? row.level + (levelperseconds * ((24 * 3600) - seconds)) : ''));
+}
+
+function CalcGoalReachedOn(row, prevrow, direction, starttime, goal) {
+	if (starttime === null || goal === null) {
+		return '';
+	}
+	
+	var levelsleft = goal - row.level;
+	var levelperseconds = CalcLevelPerSecond(row, prevrow, direction);
+	var seconds = CalcSeconds(row, direction);
+	
+	var date = new Date(starttime);
+	date.setSeconds(date.getSeconds() + GetByDirection(direction, ((24 * 3600) - seconds), seconds) + (levelsleft / levelperseconds));
+	return date;
+}
+
+function GetByDirection(direction, ifdesc, ifasc) {
+	switch (direction) {
+		case "desc":
+			return ifdesc;
+		case "asc":
+			return ifasc;
+		default:
+			return ifdesc;
+	}
 }

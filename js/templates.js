@@ -586,6 +586,7 @@ var level_tracker_template = '\
 			<th style="width: fit-content">Ball</th>\
 			<th style="width: fit-content">Perk</th>\
 			<th style="width: 70px">Value</th>\
+			<th style="width: fit-content">Direction</th>\
 			<th style="width: fit-content">Start Time</th>\
 			<th style="width: 115px">Goal</th>\
 		</thead>\
@@ -600,6 +601,12 @@ var level_tracker_template = '\
 			</td>\
 			<th>Speed</th>\
 			<td><input type="number" id="%tab%_speed" onchange="handleSettingsChange(event)" /></td>\
+			<td>\
+				<select id="%tab%_direction_type" onchange="handleSettingsChange(event)">\
+					<option value="desc">Descending</option>\
+					<option value="asc">Ascending</option>\
+				</select>\
+			</td>\
 			<td><input type="datetime-local" id="%tab%_start_time" onchange="handleSettingsChange(event)" lang="en-UK" /></td>\
 			<td><input type="number" id="%tab%_goal" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
