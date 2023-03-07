@@ -574,6 +574,7 @@ var level_tracker_template = '\
 			<th class="%tab%_show_level_per_day_togglecolumn" style="width: fit-content">Level /<br> day</th>\
 			<th class="%tab%_show_24h_estimated_result_togglecolumn" style="width: fit-content">24h<br>est. result</th>\
 			<th class="%tab%_show_goal_reached_on_togglecolumn" style="width: fit-content" id="%tab%_goal_reached_on">??<br>reached on:</th>\
+			<th class="%tab%_show_comments_togglecolumn" style="width: fit-content" id="%tab%_comments">Comments</th>\
 			<th style="width: fit-content" id="%tab%_delete_row"></th>\
 		</thead>\
 	</table>\
@@ -780,6 +781,7 @@ var level_tracker_row_template = '\
 	<td class="%tab%_show_level_per_day_togglecolumn" id="%tab%_%row%_level_per_day"></td>\
 	<td class="%tab%_show_24h_estimated_result_togglecolumn" id="%tab%_%row%_24h_estimated_result"></td>\
 	<td class="%tab%_show_goal_reached_on_togglecolumn" id="%tab%_%row%_goal_reached_on"></td>\
+	<td class="%tab%_show_comments_togglecolumn"><input class="w300" type="text" id="%tab%_%row%_comments" onchange="handleChange(event)" /></td>\
 	<td class="deleterow"><a id="%tab%_%row%_delete_row" href="#" onclick="handleDeleteRow(event)">X</a></td>\
 </tr>\
 ';
@@ -843,9 +845,13 @@ var level_tracker_show_columns_template = '\
 		<input id="%tab%_show_24h_estimated_result" type="checkbox" onchange="handleSettingsChange(event)" />24h Estimated Result\
 	</label>\
 	<br>\
-		<label for="%tab%_show_goal_reached_on">\
-			<input id="%tab%_show_goal_reached_on" type="checkbox" onchange="handleSettingsChange(event)" />Goal Reached on:\
-		</label>\
+	<label for="%tab%_show_goal_reached_on">\
+		<input id="%tab%_show_goal_reached_on" type="checkbox" onchange="handleSettingsChange(event)" />Goal Reached on:\
+	</label>\
+	<br>\
+	<label for="%tab%_comments">\
+		<input id="%tab%_show_comments" type="checkbox" onchange="handleSettingsChange(event)" />Comments\
+	</label>\
 </div>\
 ';
 

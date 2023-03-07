@@ -39,6 +39,7 @@ var defaulttabs = [{
 	"show_level_per_day": false,
 	"show_24h_estimated_result": true,
 	"show_goal_reached_on": false,
+	"show_comments": false,
 
 	"rows": [
 	{
@@ -49,6 +50,7 @@ var defaulttabs = [{
 		"seconds": 0,
 		"level": 114537,
 		"skipped": null,
+		"comments": null,
 	},
 	{
 		"id": "row1",
@@ -58,6 +60,7 @@ var defaulttabs = [{
 		"seconds": 56,
 		"level": 200448,
 		"skipped": null,
+		"comments": null,
 	},
 	{
 		"id": "row2",
@@ -67,6 +70,7 @@ var defaulttabs = [{
 		"seconds": null,
 		"level": null,
 		"skipped": null,
+		"comments": null,
 	}]
 }];
 
@@ -118,7 +122,7 @@ function handleChange(event) {
 	var row = tab.rows.find(e => e.id === rowid);
 	var elementid = element.id.slice(rowsplit + 1);
 
-	if (elementid.includes("type")) {
+	if (elementid.includes("type") || elementid.includes("comments")) {
 		console.log(row[elementid], value);
 		row[elementid] = value;
 	}
@@ -284,6 +288,7 @@ function handleNewRow(event) {
 		"seconds": null,
 		"level": null,
 		"skipped": null,
+		"comments": null,
 	});
 	
 	console.log('Create new row');
