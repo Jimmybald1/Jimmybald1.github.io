@@ -68,13 +68,17 @@ input[type=number] {
 }
 
 /* Inputs */
-input[type=number] {
+input[type=number], input[type=text] {
     width: 100%;
     text-align: center;
     color: #fff;
     background-color: #555;
     border-color: #555;
     vertical-align: middle;
+}
+
+input[type=text].w300 {
+	width: 300px;
 }
 
 input[type=checkbox] {
