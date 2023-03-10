@@ -56,6 +56,7 @@ var defaulttabs = [{
 	"settings": structuredClone(defaultsettings),
 	"global_settings_active": true,
 	"all_settings_active": false,
+	"header_windfall": '1aa',
 	
 	"base_type": null,
 	"base_amount": null,
@@ -216,45 +217,57 @@ function GetTabValue(tab, key, def) {
 	return def;
 }
 
-function FormatNumber(num) {
-	const lookup = [
-		{ value: 1, symbol: "" },
-		{ value: 1e3, symbol: "K" },
-		{ value: 1e6, symbol: "M" },
-		{ value: 1e9, symbol: "B" },
-		{ value: 1e12, symbol: "T" },
-		{ value: 1e15, symbol: "q" },
-		{ value: 1e18, symbol: "Q" },
-		{ value: 1e21, symbol: "s" },
-		{ value: 1e24, symbol: "S" },
-		{ value: 1e27, symbol: "O" },
-		{ value: 1e30, symbol: "N" },
-		{ value: 1e33, symbol: "D" },
-		{ value: 1e36, symbol: "aa" },
-		{ value: 1e39, symbol: "ab" },
-		{ value: 1e42, symbol: "ac" },
-		{ value: 1e45, symbol: "ad" },
-		{ value: 1e48, symbol: "ae" },
-		{ value: 1e51, symbol: "af" },
-		{ value: 1e54, symbol: "ag" },
-		{ value: 1e57, symbol: "ah" },
-		{ value: 1e60, symbol: "ai" },
-		{ value: 1e63, symbol: "aj" },
-		{ value: 1e66, symbol: "ak" },
-		{ value: 1e69, symbol: "al" },
-		{ value: 1e72, symbol: "am" },
-		{ value: 1e75, symbol: "an" },
-		{ value: 1e78, symbol: "ao" },
-		{ value: 1e81, symbol: "ap" },
-		{ value: 1e84, symbol: "aq" },
-		{ value: 1e87, symbol: "ar" },
-		{ value: 1e90, symbol: "as" },
-		{ value: 1e93, symbol: "at" },
-		{ value: 1e96, symbol: "au" },
-		{ value: 1e99, symbol: "av" },
-		{ value: 1e102, symbol: null },
-	];
+function GetKeyFromEvent(event) {	
+	var element = event.target;
+	var tabsplit = element.id.indexOf('_');
+	return element.id.slice(tabsplit + 1);	
+}
 
+function GetTabFromEvent(event) {	
+	var element = event.target;
+	var tabsplit = element.id.indexOf('_');
+	var id = element.id.slice(0, tabsplit);
+	return tabs.find(e => e.id === id);
+}
+
+const lookup = [
+	{ value: 1, symbol: "" },
+	{ value: 1e3, symbol: "K" },
+	{ value: 1e6, symbol: "M" },
+	{ value: 1e9, symbol: "B" },
+	{ value: 1e12, symbol: "T" },
+	{ value: 1e15, symbol: "q" },
+	{ value: 1e18, symbol: "Q" },
+	{ value: 1e21, symbol: "s" },
+	{ value: 1e24, symbol: "S" },
+	{ value: 1e27, symbol: "O" },
+	{ value: 1e30, symbol: "N" },
+	{ value: 1e33, symbol: "D" },
+	{ value: 1e36, symbol: "aa" },
+	{ value: 1e39, symbol: "ab" },
+	{ value: 1e42, symbol: "ac" },
+	{ value: 1e45, symbol: "ad" },
+	{ value: 1e48, symbol: "ae" },
+	{ value: 1e51, symbol: "af" },
+	{ value: 1e54, symbol: "ag" },
+	{ value: 1e57, symbol: "ah" },
+	{ value: 1e60, symbol: "ai" },
+	{ value: 1e63, symbol: "aj" },
+	{ value: 1e66, symbol: "ak" },
+	{ value: 1e69, symbol: "al" },
+	{ value: 1e72, symbol: "am" },
+	{ value: 1e75, symbol: "an" },
+	{ value: 1e78, symbol: "ao" },
+	{ value: 1e81, symbol: "ap" },
+	{ value: 1e84, symbol: "aq" },
+	{ value: 1e87, symbol: "ar" },
+	{ value: 1e90, symbol: "as" },
+	{ value: 1e93, symbol: "at" },
+	{ value: 1e96, symbol: "au" },
+	{ value: 1e99, symbol: "av" },
+	{ value: 1e102, symbol: null },
+];
+function FormatNumber(num) {
 	var item = lookup.slice().reverse().find(function (item) {
 		return num >= item.value;
 	});
@@ -268,6 +281,23 @@ function FormatNumber(num) {
 	}
 
 	return item ? (num / item.value).toFixed(2) + item.symbol : "0";
+}
+function UnFormatNumber(text) {
+	var num = parseFloat(text);
+	if (isNaN(num)) {
+		return NaN;
+	}
+	
+	var symbol = text.replace(num, '');
+	var item = lookup.slice().reverse().find(function (item) {
+		return symbol == item.symbol;
+	});
+
+	if (item === undefined) {
+		return NaN;
+	}
+	
+	return num * item.value;
 }
 
 function handleCalculatorChange(event) {
@@ -327,6 +357,31 @@ function handleSettingsChange(event) {
 	BuildStatsCalculator(tab);
 }
 
+function handleWindfallChange(event) {
+	var value = event.target.value;
+	var tab = GetTabFromEvent(event);
+	var key = GetKeyFromEvent(event);
+	
+	if (!isNaN(value)) {
+		console.log(GetSettings(tab, key), parseFloat(value));
+		SetSettings(tab, key, parseFloat(value));
+	}
+	else {
+		var num = UnFormatNumber(value);
+		if (isNaN(num)) {
+			$('#' + tab.id + key).val(NaN);
+			console.log(GetSettings(tab, key), NaN);
+			SetSettings(tab, key, NaN);
+		}
+		else {
+			console.log(GetSettings(tab, key), value);
+			SetSettings(tab, key, value);			
+		}
+	}
+	
+	BuildStatsCalculator(tab);
+}
+
 function handleTabChange(event) {
 	var element = event.target;
 	var tabsplit = element.id.indexOf('_');
@@ -339,7 +394,6 @@ function handleTabChange(event) {
 }
 
 function handleNewTab(event) {
-	var element = event.target;
 	var newindex = tabs.length;			
 	
 	if (tabs.length > 0) {
@@ -458,6 +512,7 @@ function BuildStatsCalculator(tab) {
 	}
 
 	$(tagid + 'totalcost').html(FormatNumber(totalcost));
+	$(tagid + 'totalwindfall').html(CalculateWindfallCost(tab, totalcost));
 	
 	// Tab-Settings
 	var totalbadges = 0;
@@ -512,6 +567,7 @@ function CalculateRow(tab, slot) {
 		$(tagid + slot + '_chain_brick').html("");
 		$(tagid + slot + '_chain_hex').html("");
 		$(tagid + slot + '_chain_shield').html("");
+		$(tagid + slot + '_windfall').html("");
 		return;
 	}
 
@@ -527,6 +583,10 @@ function CalculateRow(tab, slot) {
 	var cost = CalculateCost(tab, slot);
 	$(tagid + slot + '_cost').html(FormatNumber(cost));
 	totalcost += cost;
+	
+	// Windfall gems cost
+	var windfallcost = CalculateWindfallCost(tab, cost);
+	$(tagid + slot + '_windfall').html(windfallcost);
 	
 	// Damage with x Poison
 	var damage = null;
@@ -697,6 +757,20 @@ function CalculateCost(tab, slot) {
 	var prestige2cost = ((speedLevel > 80) ? basecosts[slot].speed * Math.pow(1.9, 78) * 9.49 : 0) * speedcostmod;
 	var cost = buycost + ballcost + speedcost + powercost + prestige1cost + prestige2cost;
 	return cost;
+}
+
+function CalculateWindfallCost(tab, cost) {
+	var start = UnFormatNumber(GetSettings(tab, 'header_windfall', NaN));
+	if (isNaN(start)) {
+		return '';
+	}
+	
+	if (start > cost) {
+		return '';
+	}
+	
+	var wf = Math.log(cost / start) / Math.log(1.3);
+	return Math.ceil(wf) * 25;
 }
 
 function SkillsTreeModifier(tab, balltype, stat, def) {

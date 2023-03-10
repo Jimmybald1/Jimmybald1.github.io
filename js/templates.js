@@ -9,6 +9,7 @@ var table_template = '<div class="text-center">\
 			<th style="width: fit-content">Speed</th>\
 			<th style="width: fit-content">Power</th>\
 			<th style="width: fit-content">Cost</th>\
+			<th style="width: 110px">Windfall from<br><input type="text" id="%tab%_header_windfall" onchange="handleWindfallChange(event)" /></th>\
 			<th style="width: fit-content" id="%tab%_header_dmg_poison">Damage w/<br>?? Poison</th>\
 			<th style="width: fit-content">Last 1shot<br>Brick Level</th>\
 			<th style="width: fit-content">Last 1shot<br>Hex Level</th>\
@@ -31,6 +32,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_base_speed"></td>\
 			<td id="%tab%_base_power"></td>\
 			<td id="%tab%_base_cost"></td>\
+			<td id="%tab%_base_windfall"></td>\
 			<td id="%tab%_base_dmg_poison"></td>\
 			<td id="%tab%_base_1shot_brick"></td>\
 			<td id="%tab%_base_1shot_hex"></td>\
@@ -54,6 +56,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_175_speed"></td>\
 			<td id="%tab%_175_power"></td>\
 			<td id="%tab%_175_cost"></td>\
+			<td id="%tab%_175_windfall"></td>\
 			<td id="%tab%_175_dmg_poison"></td>\
 			<td id="%tab%_175_1shot_brick"></td>\
 			<td id="%tab%_175_1shot_hex"></td>\
@@ -79,6 +82,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_7500_speed"></td>\
 			<td id="%tab%_7500_power"></td>\
 			<td id="%tab%_7500_cost"></td>\
+			<td id="%tab%_7500_windfall"></td>\
 			<td id="%tab%_7500_dmg_poison"></td>\
 			<td id="%tab%_7500_1shot_brick"></td>\
 			<td id="%tab%_7500_1shot_hex"></td>\
@@ -105,6 +109,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_175k_speed"></td>\
 			<td id="%tab%_175k_power"></td>\
 			<td id="%tab%_175k_cost"></td>\
+			<td id="%tab%_175k_windfall"></td>\
 			<td id="%tab%_175k_dmg_poison"></td>\
 			<td id="%tab%_175k_1shot_brick"></td>\
 			<td id="%tab%_175k_1shot_hex"></td>\
@@ -133,6 +138,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_15m_speed"></td>\
 			<td id="%tab%_15m_power"></td>\
 			<td id="%tab%_15m_cost"></td>\
+			<td id="%tab%_15m_windfall"></td>\
 			<td id="%tab%_15m_dmg_poison"></td>\
 			<td id="%tab%_15m_1shot_brick"></td>\
 			<td id="%tab%_15m_1shot_hex"></td>\
@@ -164,6 +170,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_400b_speed"></td>\
 			<td id="%tab%_400b_power"></td>\
 			<td id="%tab%_400b_cost"></td>\
+			<td id="%tab%_400b_windfall"></td>\
 			<td id="%tab%_400b_dmg_poison"></td>\
 			<td id="%tab%_400b_1shot_brick"></td>\
 			<td id="%tab%_400b_1shot_hex"></td>\
@@ -195,6 +202,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_10q_speed"></td>\
 			<td id="%tab%_10q_power"></td>\
 			<td id="%tab%_10q_cost"></td>\
+			<td id="%tab%_10q_windfall"></td>\
 			<td id="%tab%_10q_dmg_poison"></td>\
 			<td id="%tab%_10q_1shot_brick"></td>\
 			<td id="%tab%_10q_1shot_hex"></td>\
@@ -226,6 +234,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_10s_speed"></td>\
 			<td id="%tab%_10s_power"></td>\
 			<td id="%tab%_10s_cost"></td>\
+			<td id="%tab%_10s_windfall"></td>\
 			<td id="%tab%_10s_dmg_poison"></td>\
 			<td id="%tab%_10s_1shot_brick"></td>\
 			<td id="%tab%_10s_1shot_hex"></td>\
@@ -257,6 +266,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_100o_speed"></td>\
 			<td id="%tab%_100o_power"></td>\
 			<td id="%tab%_100o_cost"></td>\
+			<td id="%tab%_100o_windfall"></td>\
 			<td id="%tab%_100o_dmg_poison"></td>\
 			<td id="%tab%_100o_1shot_brick"></td>\
 			<td id="%tab%_100o_1shot_hex"></td>\
@@ -288,6 +298,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_5aa_speed"></td>\
 			<td id="%tab%_5aa_power"></td>\
 			<td id="%tab%_5aa_cost"></td>\
+			<td id="%tab%_5aa_windfall"></td>\
 			<td id="%tab%_5aa_dmg_poison"></td>\
 			<td id="%tab%_5aa_1shot_brick"></td>\
 			<td id="%tab%_5aa_1shot_hex"></td>\
@@ -319,6 +330,7 @@ var table_template = '<div class="text-center">\
 			<td id="%tab%_80ac_speed"></td>\
 			<td id="%tab%_80ac_power"></td>\
 			<td id="%tab%_80ac_cost"></td>\
+			<td id="%tab%_80ac_windfall"></td>\
 			<td id="%tab%_80ac_dmg_poison"></td>\
 			<td id="%tab%_80ac_1shot_brick"></td>\
 			<td id="%tab%_80ac_1shot_hex"></td>\
@@ -336,6 +348,7 @@ var table_template = '<div class="text-center">\
 			<td></td>\
 			<td></td>\
 			<td id="%tab%_totalcost"></td>\
+			<td id="%tab%_totalwindfall"></td>\
 			<td></td>\
 			<td></td>\
 			<td></td>\
@@ -574,7 +587,6 @@ var level_tracker_template = '\
 			<th class="%tab%_show_level_per_day_togglecolumn" style="width: fit-content">Level /<br> day</th>\
 			<th class="%tab%_show_24h_estimated_result_togglecolumn" style="width: fit-content">24h<br>est. result</th>\
 			<th class="%tab%_show_goal_reached_on_togglecolumn" style="width: fit-content" id="%tab%_goal_reached_on">??<br>reached on:</th>\
-			<th class="%tab%_show_comments_togglecolumn" style="width: fit-content" id="%tab%_comments">Comments</th>\
 			<th style="width: fit-content" id="%tab%_delete_row"></th>\
 		</thead>\
 	</table>\
@@ -781,7 +793,6 @@ var level_tracker_row_template = '\
 	<td class="%tab%_show_level_per_day_togglecolumn" id="%tab%_%row%_level_per_day"></td>\
 	<td class="%tab%_show_24h_estimated_result_togglecolumn" id="%tab%_%row%_24h_estimated_result"></td>\
 	<td class="%tab%_show_goal_reached_on_togglecolumn" id="%tab%_%row%_goal_reached_on"></td>\
-	<td class="%tab%_show_comments_togglecolumn"><input class="w300" type="text" id="%tab%_%row%_comments" onchange="handleChange(event)" /></td>\
 	<td class="deleterow"><a id="%tab%_%row%_delete_row" href="#" onclick="handleDeleteRow(event)">X</a></td>\
 </tr>\
 ';
@@ -845,13 +856,9 @@ var level_tracker_show_columns_template = '\
 		<input id="%tab%_show_24h_estimated_result" type="checkbox" onchange="handleSettingsChange(event)" />24h Estimated Result\
 	</label>\
 	<br>\
-	<label for="%tab%_show_goal_reached_on">\
-		<input id="%tab%_show_goal_reached_on" type="checkbox" onchange="handleSettingsChange(event)" />Goal Reached on:\
-	</label>\
-	<br>\
-	<label for="%tab%_comments">\
-		<input id="%tab%_show_comments" type="checkbox" onchange="handleSettingsChange(event)" />Comments\
-	</label>\
+		<label for="%tab%_show_goal_reached_on">\
+			<input id="%tab%_show_goal_reached_on" type="checkbox" onchange="handleSettingsChange(event)" />Goal Reached on:\
+		</label>\
 </div>\
 ';
 
