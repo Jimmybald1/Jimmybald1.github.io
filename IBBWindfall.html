@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Windfall Calculator</title>
+        <meta name="description" content="Windfall Calculator">
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/nav-bar.css">
+        <link rel="stylesheet" href="css/table.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/version.js"></script>
+		<script type="text/javascript" src="js/IBBWindfall.js"></script>
+    </head>
+    <body onload="BuildPage()">
+        <div class="pageheader">
+            <ul class="horizontal">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    <a href="IBBStatsCalculator.html">IBB Stats Calculator</a>
+                </li>
+                <li>
+                    <a href="IBBLevelTracker.html">IBB Level Tracker</a>
+                </li>
+                <li>
+                    <a href="settings.html">Settings</a>
+                </li>
+                <li>
+                    <a class="active" href="IBBWindfall.html">Windfall Calculator</a>
+                </li>
+                <div class="version"></div>
+            </ul>
+        </div>
+		<div id="tab_content" class="tab-content">
+			<div class="text-center">
+				<div class="text-left">
+					<h3 style="margin-left: 1px">Calculate the windfall cost from a start to a goal World Value.</h3>
+				</div>
+				<table id="sg_table" class="table table-dark table-hover table-right" style="width: fit-content;">
+					<thead>
+						<th style="width: fit-content">Start</th>
+						<th style="width: fit-content">Goal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input type="text" id="sg_start" onchange="handleWindfallChange(event)" /></td>
+							<td><input type="text" id="sg_goal" onchange="handleWindfallChange(event)" /></td>
+						</tr>
+						<tr>
+							<th id="sg_result" colspan="2"></th>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="text-left">
+					<h3 style="margin-left: 1px">Calculate the World Value result with a starting point and gem cost.</h3>
+				</div>
+				<table id="sc_table" class="table table-dark table-hover table-right" style="width: fit-content;">
+					<thead>
+						<th style="width: fit-content">Start</th>
+						<th style="width: fit-content">Cost</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input type="text" id="sc_start" onchange="handleWindfallChange(event)" /></td>
+							<td><input type="text" id="sc_cost" onchange="handleWindfallChange(event)" /></td>
+						</tr>
+						<tr>
+							<th id="sc_result" colspan="2"></th>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="text-left">
+					<h3 style="margin-left: 1px">Calculate the exact starting point to reach a goal World Value with a rough gem cost in mind.</h3>
+				</div>
+				<table id="cg_table" class="table table-dark table-hover table-right" style="width: fit-content;">
+					<thead>
+						<th style="width: fit-content">Rough Cost</th>
+						<th style="width: fit-content">Goal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input type="text" id="cg_cost" onchange="handleWindfallChange(event)" /></td>
+							<td><input type="text" id="cg_goal" onchange="handleWindfallChange(event)" /></td>
+						</tr>
+						<tr>
+							<th id="cg_result" colspan="2"></th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
