@@ -283,6 +283,10 @@ function FormatNumber(num) {
 	return item ? (num / item.value).toFixed(2) + item.symbol : "0";
 }
 function UnFormatNumber(text) {
+	if (!isNaN(text)) {
+		return parseFloat(text);
+	}
+	
 	var num = parseFloat(text);
 	if (isNaN(num)) {
 		return NaN;
