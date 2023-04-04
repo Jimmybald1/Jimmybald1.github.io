@@ -517,6 +517,7 @@ function BuildStatsCalculator(tab) {
 
 	$(tagid + 'totalcost').html(FormatNumber(totalcost));
 	$(tagid + 'totalwindfall').html(CalculateWindfallCost(tab, totalcost));
+	$('#header_windfall').val(tab.header_windfall)
 	
 	// Tab-Settings
 	var totalbadges = 0;
@@ -704,12 +705,18 @@ function CalculateSpeed(tab, balltype, slot) {
 	return speed;
 }
 
-function CalculatePower(tab, balltype, slot) {			
+function CalculatePower(tab, balltype, slot, speedLevel, powerLevel) {
+	if (speedLevel === undefined) {
+		var speedLevel = GetTabValue(tab, slot + '_speedLevel', 0);
+	}
+	
+	if (powerLevel === undefined) {
+		var powerLevel = GetTabValue(tab, slot + '_powerLevel', 0);
+	}
+	
 	var increment = powerbasestats[balltype].increment;
 	var modifier = powerbasestats[balltype].modifier;
 	var basestat = basestats[slot][balltype].power;
-	var speedLevel = GetTabValue(tab, slot + '_speedLevel', 0);
-	var powerLevel = GetTabValue(tab, slot + '_powerLevel', 0);
 
 	var powerBase = (1
 		+ (increment * powerLevel * (Math.pow(modifier, powerLevel)))
@@ -797,12 +804,16 @@ function CalculateDamageWithPoison(tab, balltype, otherpower) {
 		}
 	}
 	
+	var speedLevel = GetTabValue(tab, poisonslot + '_speedLevel', 0);
+	var powerLevel = GetTabValue(tab, poisonslot + '_powerLevel', 0);	
 	if (poisonslot === null) {
-		$(tagid + 'header_dmg_poison').html("Damage w/<br>?? Poison");
-		return null;
+		$(tagid + 'header_dmg_poison').html("Damage w/<br>Noxious Fumes");
+		poisonslot = "7500";
+		speedLevel = 0;
+		powerLevel = 0;
 	}
 	
-	var poisonpower = CalculatePower(tab, "poison", poisonslot);
+	var poisonpower = CalculatePower(tab, "poison", poisonslot, speedLevel, powerLevel);
 	if (balltype === "lightning") {
 		var lightningdamage = otherpower * poisonpower;
 		var chaindamage = 0.3 * lightningdamage * poisonpower;
