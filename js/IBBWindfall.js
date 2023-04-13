@@ -81,7 +81,7 @@ function FormatNumber(num) {
 	}
 
 	if (item.symbol === null) {
-		return item.value.toExponential(2);
+		return num.toExponential(2);
 	}
 
 	return item ? (num / item.value).toFixed(2) + item.symbol : "0";
