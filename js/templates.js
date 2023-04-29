@@ -1,5 +1,5 @@
 var table_template = '<div class="text-center">\
-	<table class="table table-dark table-hover table-right" style="width: fit-content;">\
+	<table id="%tab%_table" class="table table-dark table-hover table-right" style="width: fit-content;">\
 		<thead>\
 			<th style="width: fit-content">Slot</th>\
 			<th style="width: 110px">Ball Type</th>\

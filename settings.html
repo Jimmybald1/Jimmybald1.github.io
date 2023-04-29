@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="css/table.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 		<script type="text/javascript" src="js/version.js"></script>
 		<script type="text/javascript" src="js/data.js"></script>
 		<script type="text/javascript" src="js/settings.js"></script>
@@ -39,8 +40,10 @@
                 <div class="version"></div>
             </ul>
         </div>
+        <input id="btnSave" class="dark" type="button" onclick="getScreenShot()" value="Copy Table To Clipboard" />
+
         <div class="text-center">
-            <table class="table table-dark table-hover" style="width: 320px;">
+            <table id="table_settings" class="table table-dark table-hover" style="width: 320px;">
                 <thead>
                     <th style="width: 120px;">Prestige</th>
                     <th style="width: 40px">Value</th>

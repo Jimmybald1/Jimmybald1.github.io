@@ -92,6 +92,13 @@ label > input[type=checkbox] {
 	margin-right: 5px;
 }
 
+input[type=button].dark {
+    background-color: #333;
+    color: #fff;
+	border-radius: 1px;
+	margin: 10px;
+}
+
 a > input[type=button] {
 	background-color: transparent;
     border: none;

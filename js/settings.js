@@ -77,6 +77,24 @@ function StoreItem(key, text) {
 	window.localStorage.setItem(key, text);
 }
 
+function getScreenShot(){
+    let src = document.getElementById('table_settings');
+    html2canvas(src).then(function(canvas) {
+	  canvas.toBlob(function(blob) {
+		navigator.clipboard
+		  .write([
+			new ClipboardItem(
+			  Object.defineProperty({}, blob.type, {
+				value: blob,
+				enumerable: true
+			  })
+			)
+		  ])
+		  .then(function() {});
+	  });
+    });
+}
+
 function handleChange(event) {
 	var element = event.target;
 	var value = element.value;

@@ -102,6 +102,27 @@ function StoreItem(key, obj) {
 	window.localStorage.setItem(key, JSON.stringify(obj));
 }
 
+function getScreenShot(){
+	var activeTab = GetItem("activeTab", defaultactivetab);
+	var tableid = tabs[activeTab.ibbleveltracker].id + '_table';
+	
+    let src = document.getElementById(tableid);
+    html2canvas(src).then(function(canvas) {
+	  canvas.toBlob(function(blob) {
+		navigator.clipboard
+		  .write([
+			new ClipboardItem(
+			  Object.defineProperty({}, blob.type, {
+				value: blob,
+				enumerable: true
+			  })
+			)
+		  ])
+		  .then(function() {});
+	  });
+    });
+}
+
 function GetTabValue(tab, key, def) {
 	if (Object.keys(tab).includes(key)
 		&& tab[key] !== null) {
