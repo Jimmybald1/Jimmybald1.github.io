@@ -84,7 +84,7 @@ function FormatNumber(num) {
 		return num.toExponential(4);
 	}
 
-	return item ? (num / item.value).toFixed(2) + item.symbol : "0";
+	return item ? (num / item.value).toFixed(4) + item.symbol : "0";
 }
 function UnFormatNumber(text) {
 	if (!isNaN(text)) {
