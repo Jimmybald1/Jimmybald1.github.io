@@ -96,7 +96,7 @@ function UnFormatNumber(text) {
 		return NaN;
 	}
 	
-	var symbol = text.replace(num, '');
+	var symbol = text.replace(num, '').replace(/0*/, '');
 	var item = lookup.slice().reverse().find(function (item) {
 		return symbol == item.symbol;
 	});
