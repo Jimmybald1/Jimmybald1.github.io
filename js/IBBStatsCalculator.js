@@ -590,9 +590,9 @@ function CalculateRow(tab, slot) {
 		$(tagid + slot + '_1shot_brick').html("");
 		$(tagid + slot + '_1shot_hex').html("");
 		$(tagid + slot + '_1shot_shield').html("");
-		$(tagid + slot + '_chain_brick').html("");
-		$(tagid + slot + '_chain_hex').html("");
-		$(tagid + slot + '_chain_shield').html("");
+		// $(tagid + slot + '_chain_brick').html("");
+		// $(tagid + slot + '_chain_hex').html("");
+		// $(tagid + slot + '_chain_shield').html("");
 		$(tagid + slot + '_windfall').html("");
 		return;
 	}
@@ -666,45 +666,46 @@ function CalculateRow(tab, slot) {
 		$(tagid + slot + '_1shot_brick').html("");
 		$(tagid + slot + '_1shot_hex').html("");
 		$(tagid + slot + '_1shot_shield').html("");
-		$(tagid + slot + '_chain_brick').html("");
-		$(tagid + slot + '_chain_hex').html("");
-		$(tagid + slot + '_chain_shield').html("");
+		// $(tagid + slot + '_chain_brick').html("");
+		// $(tagid + slot + '_chain_hex').html("");
+		// $(tagid + slot + '_chain_shield').html("");
 		return;
 	}
 	
-	// Lightning chain shenanigans
-	if (balltype === "lightning") {
-		// Ignoring catalyst, it only applies when the chain hits a poisoned brick, but not when only the ball hits a poisoned brick. (it will still apply poison in both cases)
-		var chaindamage = 0.3 * power * poisonpower; //* GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
+	// Fixed in v1.9.2
+	// // Lightning chain shenanigans
+	// if (balltype === "lightning") {
+	// 	// Ignoring catalyst, it only applies when the chain hits a poisoned brick, but not when only the ball hits a poisoned brick. (it will still apply poison in both cases)
+	// 	var chaindamage = 0.3 * power * poisonpower; //* GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
 		
-		// Green bricks
-		var bricklevel = CalculateLastBrickLevel(chaindamage);
-		if (bricklevel > 100e6) {
-			$(tagid + slot + '_chain_brick').html(FormatNumber(bricklevel));
-		}
-		else {
-			$(tagid + slot + '_chain_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
-		}
+	// 	// Green bricks
+	// 	var bricklevel = CalculateLastBrickLevel(chaindamage);
+	// 	if (bricklevel > 100e6) {
+	// 		$(tagid + slot + '_chain_brick').html(FormatNumber(bricklevel));
+	// 	}
+	// 	else {
+	// 		$(tagid + slot + '_chain_brick').html(bricklevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+	// 	}
 		
-		// Hex bricks
-		var hexlevel = CalculateLastBrickLevel(chaindamage / 25);
-		if (hexlevel > 100e6) {
-			$(tagid + slot + '_chain_hex').html(FormatNumber(hexlevel));
-		}
-		else {
-			$(tagid + slot + '_chain_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
-		}
+	// 	// Hex bricks
+	// 	var hexlevel = CalculateLastBrickLevel(chaindamage / 25);
+	// 	if (hexlevel > 100e6) {
+	// 		$(tagid + slot + '_chain_hex').html(FormatNumber(hexlevel));
+	// 	}
+	// 	else {
+	// 		$(tagid + slot + '_chain_hex').html(hexlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+	// 	}
 		
-		// Shield Hex bricks (assume only 1 part hits shield, if both ball and chain hit shield, shield modifier and shield pen should be quadratic)
-		var shielddamage = chaindamage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
-		var shieldlevel = CalculateLastBrickLevel(shielddamage);
-		if (shieldlevel > 100e6) {
-			$(tagid + slot + '_chain_shield').html(FormatNumber(shieldlevel));
-		}
-		else {
-			$(tagid + slot + '_chain_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
-		}
-	}
+	// 	// Shield Hex bricks (assume only 1 part hits shield, if both ball and chain hit shield, shield modifier and shield pen should be quadratic)
+	// 	var shielddamage = chaindamage / 25 / (500 / GetSettingsIfTrue(tab, "cards_shieldpen_active", "cards_shieldpen_value", 1));
+	// 	var shieldlevel = CalculateLastBrickLevel(shielddamage);
+	// 	if (shieldlevel > 100e6) {
+	// 		$(tagid + slot + '_chain_shield').html(FormatNumber(shieldlevel));
+	// 	}
+	// 	else {
+	// 		$(tagid + slot + '_chain_shield').html(shieldlevel.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));			
+	// 	}
+	// }
 }
 
 function CalculateSpeed(tab, balltype, slot) {		
@@ -837,10 +838,9 @@ function CalculateDamageWithPoison(tab, balltype, otherpower) {
 	var poisonpower = CalculatePower(tab, "poison", poisonslot, speedLevel, powerLevel);
 	if (balltype === "lightning") {
 		var lightningdamage = otherpower * poisonpower;
-		var chaindamage = 0.3 * lightningdamage * poisonpower;
 		var catalyst = GetSettingsIfTrue(tab, "cards_catalyst_active", "cards_catalyst_value", 1);
 		return {
-			damage: (lightningdamage * catalyst) + (chaindamage * catalyst),
+			damage: (lightningdamage * catalyst),
 			poisonpower: poisonpower,
 		};
 	}
