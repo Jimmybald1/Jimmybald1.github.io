@@ -81,10 +81,10 @@ function FormatNumber(num) {
 	}
 
 	if (item.symbol === null) {
-		return num.toExponential(2);
+		return num.toExponential(4);
 	}
 
-	return item ? (num / item.value).toFixed(2) + item.symbol : "0";
+	return item ? (num / item.value).toFixed(4) + item.symbol : "0";
 }
 function UnFormatNumber(text) {
 	if (!isNaN(text)) {
@@ -96,7 +96,7 @@ function UnFormatNumber(text) {
 		return NaN;
 	}
 	
-	var symbol = text.replace(num, '');
+	var symbol = text.replace(num, '').replace(/0*/, '');
 	var item = lookup.slice().reverse().find(function (item) {
 		return symbol == item.symbol;
 	});
