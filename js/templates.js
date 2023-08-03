@@ -491,6 +491,18 @@ var table_template = '<div class="text-center">\
 			<td><input type="number" id="%tab%_skillstree_basic_power" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
 		<tr class="%tab%_togglerow">\
+			<td>Basic Splash</td>\
+			<td><input type="number" id="%tab%_skillstree_basic_splash" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
+			<td>Sniper Shield</td>\
+			<td><input type="number" id="%tab%_skillstree_sniper_shield" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
+			<td>Splash Power</td>\
+			<td><input type="number" id="%tab%_skillstree_splash_power" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
 			<td>Poison Speed</td>\
 			<td><input type="number" id="%tab%_skillstree_poison_speed" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
@@ -503,8 +515,20 @@ var table_template = '<div class="text-center">\
 			<td><input type="number" id="%tab%_skillstree_demo_enrage" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
 		<tr class="%tab%_togglerow">\
+			<td>Demo Enrage Stack</td>\
+			<td><input type="number" id="%tab%_skillstree_demo_enrage_stack" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
+			<td>Scatter Power</td>\
+			<td><input type="number" id="%tab%_skillstree_scatter_power" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
 			<td>Cash Power</td>\
 			<td><input type="number" id="%tab%_skillstree_cash_power" onchange="handleSettingsChange(event)" /></td>\
+		</tr>\
+		<tr class="%tab%_togglerow">\
+			<td>Cash More Cash</td>\
+			<td><input type="number" id="%tab%_skillstree_cash_more_cash" onchange="handleSettingsChange(event)" /></td>\
 		</tr>\
 		<tr class="%tab%_togglerow">\
 			<td>Pierce Power</td>\
